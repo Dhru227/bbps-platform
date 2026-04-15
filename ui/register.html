@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partner with BBPS — Bharat Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --blue:#2F5FB8; --blue-dark:#254D98; --orange:#FF6A1A; --gray-200:#E2E8F0; --gray-400:#94A3B8; --gray-600:#475569; --gray-800:#1E293B; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; height:100vh; display:flex; overflow:hidden; }
+  .left { width:50%; background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); display:flex; flex-direction:column; padding:40px 48px; position:relative; overflow:hidden; }
+  .brand { color:white; font-size:20px; font-weight:600; }
+  .left-content { flex:1; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:60px; }
+  .left-content h1 { font-size:52px; font-weight:300; color:white; line-height:1.1; letter-spacing:-2px; margin-bottom:16px; }
+  .left-content p { font-size:18px; color:rgba(255,255,255,0.7); line-height:1.6; max-width:380px; }
+  .deco { position:absolute; bottom:-60px; left:-60px; width:400px; height:400px; border:1px solid rgba(255,255,255,0.08); border-radius:50%; }
+  .deco2 { position:absolute; bottom:-120px; left:-120px; width:560px; height:560px; border:1px solid rgba(255,255,255,0.05); border-radius:50%; }
+  .right { width:50%; background:white; display:flex; align-items:center; justify-content:center; padding:48px; }
+  .form-card { width:100%; max-width:400px; }
+  .badge { display:inline-block; background:var(--orange); color:white; font-size:11px; font-weight:500; font-family:'DM Mono',monospace; letter-spacing:1px; text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-bottom:20px; }
+  .form-card h2 { font-size:28px; font-weight:600; color:var(--gray-800); letter-spacing:-0.5px; margin-bottom:32px; }
+  .form-group { margin-bottom:20px; }
+  .form-group label { display:block; font-size:13px; font-weight:500; color:var(--gray-600); margin-bottom:6px; }
+  .form-group input { width:100%; height:48px; padding:0 16px; border:1.5px solid var(--gray-200); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:var(--gray-800); outline:none; transition:border-color 0.15s; }
+  .form-group input::placeholder { color:var(--gray-400); }
+  .form-group input:focus { border-color:var(--blue); }
+  .btn-primary { width:100%; height:48px; background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); color:white; border:none; border-radius:8px; font-size:15px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; margin-top:8px; transition:opacity 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .btn-primary:hover { opacity:0.92; }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
+  .signin-text { text-align:center; margin-top:16px; font-size:13px; color:var(--gray-400); }
+  .signin-text a { color:var(--blue); text-decoration:none; }
+  .error-msg { background:#FEE2E2; border:1px solid #FECACA; color:#DC2626; font-size:13px; padding:10px 14px; border-radius:8px; margin-top:12px; display:none; }
+  .error-msg.show { display:block; }
+  .loading { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="left">
+  <div class="brand">Bharat Connect</div>
+  <div class="left-content">
+    <h1>Partner with BBPS</h1>
+    <p>Get your business ready to accept digital bill payments across India</p>
+  </div>
+  <div class="deco"></div>
+  <div class="deco2"></div>
+</div>
+<div class="right">
+  <div class="form-card">
+    <span class="badge">BBPS Certified Onboarding</span>
+    <h2>Tell us about your business</h2>
+    <div class="form-group"><label>Business Name</label><input type="text" id="biz-name" placeholder="Enter your business name"></div>
+    <div class="form-group"><label>Contact Person</label><input type="text" id="contact" placeholder="Full name of contact person"></div>
+    <div class="form-group"><label>Mobile Number</label><input type="tel" id="mobile" placeholder="+91 XXXXX XXXXX"></div>
+    <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="your.email@company.com"></div>
+    <button class="btn-primary" id="start-btn" onclick="startAssessment()">Start Assessment →</button>
+    <div class="error-msg" id="error-msg"></div>
+    <p class="signin-text">Already registered? <a href="/ui/dashboard.html">Sign in</a></p>
+  </div>
+</div>
+<script>
+async function startAssessment() {
+  const name = document.getElementById('biz-name').value.trim();
+  const contact = document.getElementById('contact').value.trim();
+  const mobile = document.getElementById('mobile').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if (!name || !contact || !mobile || !email) { showError('Please fill in all fields'); return; }
+
+  const btn = document.getElementById('start-btn');
+  btn.innerHTML = '<span class="loading"></span> Starting...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/onboard/start', { method: 'POST' });
+    if (!r.ok) throw new Error('Failed');
+    const data = await r.json();
+
+    sessionStorage.clear();
+    sessionStorage.setItem('session_id', data.session_id);
+    sessionStorage.setItem('biz_name', name);
+    sessionStorage.setItem('biz_contact', contact);
+    sessionStorage.setItem('biz_mobile', mobile);
+    sessionStorage.setItem('biz_email', email);
+
+    window.location.href = '/ui/questionnaire.html';
+  } catch(e) {
+    showError('Could not connect to platform. Is it running on port 8000?');
+    btn.innerHTML = 'Start Assessment →';
+    btn.disabled = false;
+  }
+}
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter') startAssessment(); });
+</script>
+</body>
+</html>

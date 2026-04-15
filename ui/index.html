@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BBPS Platform — POC</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2F5FB8;
+    --blue-dark: #254D98;
+    --blue-light: #EBF0FB;
+    --orange: #FF6A1A;
+    --orange-light: #FFF1E9;
+    --white: #FFFFFF;
+    --gray-50: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-400: #94A3B8;
+    --gray-600: #475569;
+    --gray-800: #1E293B;
+    --header-gradient: linear-gradient(135deg, #254D98 0%, #2F5FB8 100%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--header-gradient);
+    padding: 0 48px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(37,77,152,0.18);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-area img {
+    height: 36px;
+    filter: brightness(0) invert(1);
+  }
+
+  .logo-fallback {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--orange);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .logo-text {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+
+  .header-badge {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .hero {
+    padding: 80px 48px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--orange);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--gray-800);
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 strong {
+    font-weight: 600;
+    color: var(--blue-dark);
+  }
+
+  .hero p {
+    font-size: 18px;
+    color: var(--gray-600);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 48px;
+  }
+
+  .nav-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 760px;
+  }
+
+  .nav-card {
+    background: white;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 32px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--header-gradient);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .nav-card:hover {
+    border-color: var(--blue);
+    box-shadow: 0 8px 32px rgba(47,95,184,0.12);
+    transform: translateY(-2px);
+  }
+
+  .nav-card:hover::before { opacity: 1; }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .card-icon.blue { background: var(--blue-light); }
+  .card-icon.orange { background: var(--orange-light); }
+
+  .nav-card h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .nav-card p {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .card-arrow {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    color: var(--gray-400);
+    font-size: 20px;
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .nav-card:hover .card-arrow {
+    color: var(--blue);
+    transform: translate(2px, -2px);
+  }
+
+  .status-bar {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px 48px;
+  }
+
+  .status-bar h3 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-400);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .status-chips {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--gray-600);
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .dot.green { background: #22C55E; }
+  .dot.blue { background: var(--blue); }
+  .dot.orange { background: var(--orange); }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--gray-400);
+    font-family: 'DM Mono', monospace;
+    border-top: 1px solid var(--gray-200);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-fallback">
+      <div class="logo-icon">B</div>
+      <span class="logo-text">Bharat Connect</span>
+    </div>
+  </div>
+  <span class="header-badge">POC · v0.1</span>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">BBPS Platform Control Center</div>
+  <h1>Biller onboarding,<br><strong>reimagined.</strong></h1>
+  <p>AI-driven biller registration, dynamic routing, and live bill fetch and payment — all in one platform.</p>
+
+  <div class="nav-cards">
+    <a href="/ui/onboard.html" class="nav-card">
+      <div class="card-icon blue">🤖</div>
+      <h2>AI Onboarding</h2>
+      <p>Register a new biller through a conversational AI flow. Get a BBPS-compliant biller ID in minutes.</p>
+      <span class="card-arrow">↗</span>
+    </a>
+    <a href="/ui/dashboard.html" class="nav-card">
+      <div class="card-icon orange">⚡</div>
+      <h2>Biller Dashboard</h2>
+      <p>View registered billers, check routing status, and trigger live bill fetch and payment demos.</p>
+      <span class="card-arrow">↗</span>
+    </a>
+  </div>
+</div>
+
+<div class="status-bar">
+  <h3>System Status</h3>
+  <div class="status-chips" id="status-chips">
+    <div class="chip"><div class="dot green"></div> BBPS Platform · :8000</div>
+    <div class="chip" id="sim-chip"><div class="dot blue"></div> Checking simulator...</div>
+    <div class="chip" id="b1-chip"><div class="dot orange"></div> Checking Biller 1...</div>
+    <div class="chip" id="b2-chip"><div class="dot orange"></div> Checking Biller 2...</div>
+    <div class="chip" id="b3-chip"><div class="dot orange"></div> Checking Biller 3...</div>
+  </div>
+</div>
+
+<footer>Bharat Bill Payment System · Proof of Concept · NPCI</footer>
+
+<script>
+const API_KEY = 'POC-PLATFORM-KEY-001';
+
+async function checkBillers() {
+  try {
+    const r = await fetch('/billers', { headers: { 'X-API-Key': API_KEY } });
+    const billers = await r.json();
+    const active = billers.filter(b => b.status === 'ACTIVE');
+    document.getElementById('b1-chip').innerHTML = `<div class="dot green"></div> ${active[0]?.biller_name || 'Biller 1'} · ACTIVE`;
+    document.getElementById('b2-chip').innerHTML = `<div class="dot ${active[1] ? 'green' : 'orange'}"></div> ${active[1]?.biller_name || 'Biller 2'} · ${active[1] ? 'ACTIVE' : 'PENDING'}`;
+    document.getElementById('b3-chip').innerHTML = `<div class="dot ${active[2] ? 'green' : 'orange'}"></div> ${active[2]?.biller_name || 'Biller 3'} · ${active[2] ? 'ACTIVE' : 'PENDING'}`;
+    document.getElementById('sim-chip').innerHTML = `<div class="dot green"></div> Simulator · :8112`;
+  } catch(e) {
+    document.getElementById('sim-chip').innerHTML = `<div class="dot orange"></div> Simulator · checking`;
+  }
+}
+
+checkBillers();
+</script>
+</body>
+</html>

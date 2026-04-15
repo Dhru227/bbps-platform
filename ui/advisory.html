@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Integration Plan — Bharat Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --blue:#2F5FB8; --blue-dark:#254D98; --blue-light:#EBF0FB; --orange:#FF6A1A; --orange-light:#FFF1E9; --green:#16A34A; --green-light:#DCFCE7; --gray-50:#F8FAFC; --gray-100:#F1F5F9; --gray-200:#E2E8F0; --gray-400:#94A3B8; --gray-600:#475569; --gray-800:#1E293B; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--gray-50); color:var(--gray-800); }
+  header { background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 48px; }
+  .brand { color:white; font-size:18px; font-weight:600; }
+  .header-right { display:flex; align-items:center; gap:12px; }
+  .badge-green { background:#22C55E; color:white; font-size:11px; font-family:'DM Mono',monospace; padding:4px 12px; border-radius:20px; }
+  .back-link { color:rgba(255,255,255,0.8); text-decoration:none; font-size:14px; }
+  .sub-header { background:white; border-bottom:1px solid var(--gray-200); padding:20px 48px; display:flex; align-items:center; justify-content:space-between; }
+  .sub-header h1 { font-size:20px; font-weight:600; }
+  .sub-header-badges { display:flex; gap:10px; }
+  .badge-orange { background:var(--orange-light); color:var(--orange); border:1px solid #FFD4B8; font-size:12px; font-family:'DM Mono',monospace; padding:5px 14px; border-radius:20px; }
+  .badge-blue { background:var(--blue-light); color:var(--blue); border:1px solid #C7D8F5; font-size:12px; font-family:'DM Mono',monospace; padding:5px 14px; border-radius:20px; }
+  .layout { display:grid; grid-template-columns:1fr 320px; gap:24px; max-width:1200px; margin:0 auto; padding:32px 48px; align-items:start; }
+  .left-col { display:flex; flex-direction:column; gap:20px; }
+  .card { background:white; border-radius:14px; padding:28px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+
+  /* Processing card */
+  .processing-card { text-align:center; padding:40px; }
+  .spinner { width:48px; height:48px; border:4px solid var(--blue-light); border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 20px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .processing-card h3 { font-size:18px; font-weight:600; margin-bottom:8px; }
+  .processing-card p { font-size:14px; color:var(--gray-600); }
+
+  /* Biller ID card */
+  .biller-id-card { border-left:4px solid var(--blue); display:none; }
+  .biller-id-card.show { display:block; }
+  .biller-id-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .biller-id-header-left { display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; }
+  .biller-id-display { background:var(--blue-light); border-radius:12px; padding:24px; text-align:center; margin-bottom:16px; }
+  .biller-id-text { font-family:'DM Mono',monospace; font-size:30px; font-weight:500; color:var(--blue-dark); letter-spacing:2px; }
+  .biller-id-date { font-size:12px; color:var(--gray-400); margin-top:6px; font-family:'DM Mono',monospace; }
+  .id-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  .btn-download { display:flex; align-items:center; justify-content:center; gap:6px; padding:10px; border-radius:8px; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; background:var(--orange-light); color:var(--orange); transition:all 0.15s; text-decoration:none; }
+  .btn-download:hover { background:var(--orange); color:white; }
+  .btn-copy { display:flex; align-items:center; justify-content:center; gap:6px; padding:10px; border-radius:8px; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; background:var(--blue-light); color:var(--blue); transition:all 0.15s; }
+  .btn-copy:hover { background:var(--blue); color:white; }
+  .divider { height:1px; background:var(--gray-100); margin:4px 0 12px; }
+  .accordion-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; cursor:pointer; font-size:14px; font-weight:500; color:var(--gray-600); }
+  .accordion-content { display:none; padding-top:12px; }
+  .accordion-content.open { display:block; }
+
+  .section-title { font-size:15px; font-weight:600; margin-bottom:4px; }
+  .section-sub { font-size:13px; color:var(--gray-400); margin-bottom:16px; }
+
+  .bou-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .bou-card { border:1.5px solid var(--gray-200); border-radius:10px; padding:16px; cursor:pointer; transition:all 0.15s; }
+  .bou-card:hover { border-color:var(--blue); }
+  .bou-card.selected { border-color:var(--blue); border-width:2px; background:var(--blue-light); }
+  .bou-icon { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; margin-bottom:10px; }
+  .bou-icon.blue { background:var(--blue-light); }
+  .bou-icon.teal { background:#E0F7F4; }
+  .bou-icon.purple { background:#F3EEFF; }
+  .bou-name { font-size:14px; font-weight:600; margin-bottom:6px; }
+  .bou-type-pill { display:inline-block; font-size:11px; font-family:'DM Mono',monospace; padding:2px 8px; border-radius:10px; margin-bottom:8px; }
+  .pill-national { background:#DBEAFE; color:#1D4ED8; }
+  .pill-fintech { background:#FEF3C7; color:#92400E; }
+  .pill-regional { background:#F3EEFF; color:#6D28D9; }
+  .bou-time { font-size:12px; color:var(--gray-600); margin-bottom:6px; }
+  .bou-best { font-size:12px; color:var(--gray-400); font-style:italic; line-height:1.4; margin-bottom:12px; }
+  .bou-select { font-size:13px; color:var(--blue); font-weight:500; cursor:pointer; }
+
+  .check-list { display:flex; flex-direction:column; }
+  .check-item { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--gray-100); }
+  .check-item:last-child { border-bottom:none; }
+  .check-left { display:flex; align-items:center; gap:10px; }
+  .checkbox { width:18px; height:18px; border:1.5px solid var(--gray-200); border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; }
+  .checkbox.checked { background:var(--blue); border-color:var(--blue); }
+  .checkbox.checked::after { content:'✓'; color:white; font-size:11px; }
+  .check-label { font-size:14px; }
+  .why-link { font-size:12px; color:var(--gray-400); text-decoration:underline; cursor:pointer; }
+
+  .right-col { position:sticky; top:24px; }
+  .journey-card { background:white; border-radius:14px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .journey-title { font-size:15px; font-weight:600; margin-bottom:20px; }
+  .timeline { display:flex; flex-direction:column; }
+  .tl-item { display:flex; gap:12px; padding-bottom:20px; }
+  .tl-item:last-child { padding-bottom:0; }
+  .tl-left { display:flex; flex-direction:column; align-items:center; }
+  .tl-node { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; font-family:'DM Mono',monospace; flex-shrink:0; z-index:1; }
+  .tl-node.done { background:var(--blue); color:white; }
+  .tl-node.current { background:var(--orange); color:white; }
+  .tl-node.upcoming { background:white; border:2px solid var(--gray-200); color:var(--gray-400); }
+  .tl-line { flex:1; width:1px; background:var(--gray-200); margin:4px 0; min-height:16px; }
+  .tl-item:last-child .tl-line { display:none; }
+  .tl-right { padding-top:4px; flex:1; }
+  .tl-label { font-size:13px; font-weight:500; color:var(--gray-800); }
+  .tl-label.current-label { background:var(--orange-light); color:var(--orange); padding:2px 8px; border-radius:4px; display:inline-block; }
+  .tl-sub { font-size:12px; color:var(--gray-400); margin-top:2px; }
+
+  .confirm-btn { width:100%; margin-top:20px; padding:13px; background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; transition:opacity 0.15s; }
+  .confirm-btn:hover { opacity:0.92; }
+  .confirm-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .support-link { text-align:center; margin-top:12px; font-size:12px; color:var(--gray-400); }
+  .support-link a { color:var(--blue); text-decoration:none; }
+  .badge-active { background:var(--green-light); color:var(--green); font-size:12px; font-family:'DM Mono',monospace; padding:4px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px; }
+
+  .error-banner { background:#FEE2E2; border:1px solid #FECACA; color:#DC2626; font-size:13px; padding:12px 16px; border-radius:8px; margin-bottom:16px; display:none; }
+  .error-banner.show { display:block; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="brand">Bharat Connect</span>
+  <div class="header-right">
+    <span class="badge-green">● Assessment Complete</span>
+    <a href="/ui/questionnaire.html" class="back-link">← Back</a>
+  </div>
+</header>
+
+<div class="sub-header">
+  <h1>Your Custom Integration Plan</h1>
+  <div class="sub-header-badges">
+    <span class="badge-orange" id="segment-badge">Generating plan...</span>
+    <span class="badge-blue">Est. 8–12 weeks</span>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="left-col">
+    <div class="error-banner" id="error-banner"></div>
+
+    <!-- Processing state -->
+    <div class="card processing-card" id="processing-card">
+      <div class="spinner"></div>
+      <h3>Generating your advisory plan</h3>
+      <p>Our AI is analysing your profile and creating a custom integration roadmap...</p>
+    </div>
+
+    <!-- Biller ID card (shown after processing) -->
+    <div class="card biller-id-card" id="biller-id-card">
+      <div class="biller-id-header">
+        <div class="biller-id-header-left">🪪 Your BBPS Biller ID</div>
+        <span class="badge-active">● Pending Setup</span>
+      </div>
+      <div class="biller-id-display">
+        <div class="biller-id-text" id="biller-id-display">—</div>
+        <div class="biller-id-date">Complete setup to activate</div>
+      </div>
+      <div class="id-actions">
+        <a href="#" class="btn-download">📥 Download Biller Integrator</a>
+        <button class="btn-copy" onclick="copyBillerId()">📋 Copy Biller ID</button>
+      </div>
+      <div class="divider"></div>
+      <div class="accordion-row" onclick="toggleAccordion()">
+        <span>⚙ Setup Instructions</span>
+        <span id="accordion-arrow">›</span>
+      </div>
+      <div class="accordion-content" id="accordion-content">
+        <ol style="padding-left:20px; display:flex; flex-direction:column; gap:10px;">
+          <li style="font-size:13px; color:var(--gray-600); line-height:1.5">Fork the <code style="background:var(--gray-100); padding:2px 6px; border-radius:4px; font-family:DM Mono,monospace; font-size:12px">bbps-biller-integrator</code> repo from the download link above.</li>
+          <li style="font-size:13px; color:var(--gray-600); line-height:1.5">Configure <code style="background:var(--gray-100); padding:2px 6px; border-radius:4px; font-family:DM Mono,monospace; font-size:12px">application.properties</code> with your DB, port, and <code style="background:var(--gray-100); padding:2px 6px; border-radius:4px; font-family:DM Mono,monospace; font-size:12px">ou.id</code>.</li>
+          <li style="font-size:13px; color:var(--gray-600); line-height:1.5">Run <code style="background:var(--gray-100); padding:2px 6px; border-radius:4px; font-family:DM Mono,monospace; font-size:12px">mvn spring-boot:run</code> — integrator starts on your configured port.</li>
+          <li style="font-size:13px; color:var(--gray-600); line-height:1.5">Go to the next step and submit your endpoint URL to complete activation.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- BOUs -->
+    <div class="card" id="bou-card" style="display:none">
+      <div class="section-title">Recommended BOUs</div>
+      <div class="section-sub">Matched to your profile</div>
+      <div class="bou-grid">
+        <div class="bou-card" onclick="selectBOU(this,'BOU001')">
+          <div class="bou-icon blue">🌐</div>
+          <div class="bou-name">NPCI Bharat Bill Pay</div>
+          <div><span class="bou-type-pill pill-national">National</span></div>
+          <div class="bou-time">⏱ 4–6 weeks</div>
+          <div class="bou-best">Best for: Large-scale operations, nationwide reach</div>
+          <span class="bou-select">Select →</span>
+        </div>
+        <div class="bou-card" onclick="selectBOU(this,'BOU002')">
+          <div class="bou-icon teal">⚡</div>
+          <div class="bou-name">Razorpay BillDesk</div>
+          <div><span class="bou-type-pill pill-fintech">Fintech</span></div>
+          <div class="bou-time">⏱ 3–5 weeks</div>
+          <div class="bou-best">Best for: Fast onboarding, tech-friendly APIs</div>
+          <span class="bou-select">Select →</span>
+        </div>
+        <div class="bou-card" onclick="selectBOU(this,'BOU003')">
+          <div class="bou-icon purple">📋</div>
+          <div class="bou-name">PayU BOU Services</div>
+          <div><span class="bou-type-pill pill-regional">Regional</span></div>
+          <div class="bou-time">⏱ 5–7 weeks</div>
+          <div class="bou-best">Best for: Mid-market billers, hybrid support</div>
+          <span class="bou-select">Select →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="card" id="docs-card" style="display:none">
+      <div class="section-title">Required Documents</div>
+      <div class="section-sub">Based on your entity type</div>
+      <div class="check-list">
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">Certificate of Incorporation</span></div><span class="why-link">Why?</span></div>
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">PAN Card</span></div><span class="why-link">Why?</span></div>
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">GST Certificate</span></div><span class="why-link">Why?</span></div>
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">Cancelled Cheque</span></div><span class="why-link">Why?</span></div>
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">Board Resolution</span></div><span class="why-link">Why?</span></div>
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">Authorized Signatory ID</span></div><span class="why-link">Why?</span></div>
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">BBPS Application Form</span></div><span class="why-link">Why?</span></div>
+        <div class="check-item"><div class="check-left"><div class="checkbox" onclick="toggleCheck(this)"></div><span class="check-label">Technical Integration Agreement</span></div><span class="why-link">Why?</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right column -->
+  <div class="right-col">
+    <div class="journey-card">
+      <div class="journey-title">Your Onboarding Journey</div>
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-left"><div class="tl-node done">✓</div><div class="tl-line"></div></div><div class="tl-right"><div class="tl-label">Profile Submitted</div><div class="tl-sub">Assessment complete</div></div></div>
+        <div class="tl-item"><div class="tl-left"><div class="tl-node done">✓</div><div class="tl-line"></div></div><div class="tl-right"><div class="tl-label">Plan Generated</div><div class="tl-sub">Your roadmap is ready</div></div></div>
+        <div class="tl-item"><div class="tl-left"><div class="tl-node current">→</div><div class="tl-line"></div></div><div class="tl-right"><div class="tl-label current-label">Download Integrator</div><div class="tl-sub">Get your integration package</div></div></div>
+        <div class="tl-item"><div class="tl-left"><div class="tl-node upcoming">4</div><div class="tl-line"></div></div><div class="tl-right"><div class="tl-label">Deploy Endpoint</div><div class="tl-sub">Configure and test locally</div></div></div>
+        <div class="tl-item"><div class="tl-left"><div class="tl-node upcoming">5</div><div class="tl-line"></div></div><div class="tl-right"><div class="tl-label">Select BOU</div><div class="tl-sub">Choose your operating unit</div></div></div>
+        <div class="tl-item"><div class="tl-left"><div class="tl-node upcoming">6</div><div class="tl-line"></div></div><div class="tl-right"><div class="tl-label">BOU Verification</div><div class="tl-sub">4–6 weeks processing</div></div></div>
+        <div class="tl-item"><div class="tl-left"><div class="tl-node upcoming">7</div><div class="tl-line"></div></div><div class="tl-right"><div class="tl-label">Compliance Review</div><div class="tl-sub">Document verification</div></div></div>
+        <div class="tl-item"><div class="tl-left"><div class="tl-node upcoming">8</div></div><div class="tl-right"><div class="tl-label">Go Live 🎉</div><div class="tl-sub">Start accepting payments</div></div></div>
+      </div>
+      <button class="confirm-btn" id="confirm-btn" disabled onclick="proceedToSetup()">Deploy & Register Endpoint →</button>
+      <div class="support-link">Need help? <a href="#">Contact BBPS Support</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedBOU = null;
+
+window.onload = async function() {
+  const sessionId = sessionStorage.getItem('session_id');
+  const bizName = sessionStorage.getItem('biz_name') || 'Your Business';
+  const entityType = sessionStorage.getItem('entity_type') || 'Pvt Ltd';
+  const industry = sessionStorage.getItem('industry') || 'Electricity';
+  const dataSource = sessionStorage.getItem('data_source') || 'Database';
+  const techTeam = sessionStorage.getItem('tech_team') || 'Yes, shared resource';
+  const billVolume = sessionStorage.getItem('bill_volume') || '5,000–50,000';
+  const billTypes = sessionStorage.getItem('bill_types') || industry;
+
+  if (!sessionId) {
+    window.location.href = '/ui/register.html';
+    return;
+  }
+
+  // Build a single comprehensive message from questionnaire answers
+  const msg = `My company is ${bizName}. We are a ${entityType} in the ${industry} industry. ` +
+    `We issue ${billTypes} bills. We store our bill data in ${dataSource}. ` +
+    `We have ${techTeam.toLowerCase()}. We generate approximately ${billVolume} bills per month.`;
+
+  try {
+    const r = await fetch('/onboard/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, message: msg })
+    });
+
+    if (!r.ok) throw new Error('Chat failed');
+    const data = await r.json();
+
+    // Determine segment from answers
+    const segment = getSegment(techTeam, billVolume, dataSource);
+    document.getElementById('segment-badge').textContent = segment;
+
+    // Show the plan
+    document.getElementById('processing-card').style.display = 'none';
+    document.getElementById('biller-id-card').classList.add('show');
+    document.getElementById('bou-card').style.display = 'block';
+    document.getElementById('docs-card').style.display = 'block';
+
+    // Show placeholder biller ID — real one generated on setup screen
+    document.getElementById('biller-id-display').textContent = 'Complete setup →';
+
+  } catch(e) {
+    document.getElementById('processing-card').style.display = 'none';
+    showError('Could not generate plan. ' + e.message);
+    // Still show the plan UI
+    document.getElementById('biller-id-card').classList.add('show');
+    document.getElementById('bou-card').style.display = 'block';
+    document.getElementById('docs-card').style.display = 'block';
+    document.getElementById('segment-badge').textContent = 'S2 · SME Online';
+  }
+};
+
+function getSegment(techTeam, volume, dataSource) {
+  const noTech = techTeam.includes('No tech');
+  const lowVolume = volume.includes('500') || volume.includes('5,000');
+  if (noTech && lowVolume) return 'S4 · Micro Offline';
+  if (noTech) return 'S3 · SME Offline';
+  if (lowVolume) return 'S2 · Micro Online';
+  return 'S1 · Enterprise';
+}
+
+function selectBOU(card, bouId) {
+  document.querySelectorAll('.bou-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedBOU = bouId;
+  sessionStorage.setItem('selected_bou', bouId);
+  document.getElementById('confirm-btn').disabled = false;
+}
+
+function toggleCheck(el) { el.classList.toggle('checked'); }
+
+function toggleAccordion() {
+  const content = document.getElementById('accordion-content');
+  const arrow = document.getElementById('accordion-arrow');
+  content.classList.toggle('open');
+  arrow.textContent = content.classList.contains('open') ? '⌄' : '›';
+}
+
+function copyBillerId() {
+  const id = document.getElementById('biller-id-display').textContent;
+  if (id === 'Complete setup →') return;
+  navigator.clipboard.writeText(id).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.innerHTML = '📋 Copy Biller ID', 1500);
+  });
+}
+
+function proceedToSetup() {
+  window.location.href = '/ui/setup.html';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-banner');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+</script>
+</body>
+</html>

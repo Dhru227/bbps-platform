@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile Assessment — Bharat Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2F5FB8;
+    --blue-dark: #254D98;
+    --blue-light: #EBF0FB;
+    --orange: #FF6A1A;
+    --gray-50: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-400: #94A3B8;
+    --gray-600: #475569;
+    --gray-800: #1E293B;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--gray-800); min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #254D98 0%, #2F5FB8 100%);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+  }
+  .brand { color: white; font-size: 18px; font-weight: 600; }
+  .back-link { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; }
+  .back-link:hover { color: white; }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Stepper */
+  .stepper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+  .step-item::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    right: -50%;
+    height: 1px;
+    background: var(--gray-200);
+    z-index: 0;
+  }
+  .step-item:last-child::before { display: none; }
+  .step-item.active::before { background: var(--blue); }
+
+  .step-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-200);
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    color: var(--gray-400);
+    position: relative;
+    z-index: 1;
+  }
+  .step-item.active .step-circle { background: var(--blue); border-color: var(--blue); color: white; }
+  .step-item.done .step-circle { background: var(--blue); border-color: var(--blue); color: white; }
+  .step-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--gray-400); margin-top: 6px; text-align: center; }
+  .step-item.active .step-label { color: var(--blue); font-weight: 500; }
+
+  /* Card */
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .step-eyebrow {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .card h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .card .subtitle { font-size: 14px; color: var(--gray-600); margin-bottom: 32px; }
+
+  .field-group { margin-bottom: 28px; }
+  .field-label { font-size: 13px; font-weight: 500; color: var(--gray-600); margin-bottom: 10px; display: block; }
+
+  /* Pill toggles */
+  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1.5px solid var(--gray-200);
+    background: white;
+    font-size: 14px;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+    user-select: none;
+  }
+  .pill:hover { border-color: var(--blue); color: var(--blue); }
+  .pill.selected { background: var(--blue); border-color: var(--blue); color: white; }
+
+  /* Data source grid cards */
+  .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-card {
+    padding: 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+    user-select: none;
+  }
+  .grid-card:hover { border-color: var(--blue); }
+  .grid-card.selected { border-color: var(--blue); border-width: 2px; background: var(--blue-light); }
+  .grid-card .gc-icon { font-size: 18px; margin-bottom: 8px; }
+  .grid-card .gc-title { font-size: 14px; font-weight: 500; color: var(--gray-800); }
+  .grid-card .gc-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+
+  /* Dropdown */
+  .styled-select {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--gray-800);
+    background: white;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394A3B8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+  .styled-select:focus { border-color: var(--blue); }
+
+  /* Bottom buttons */
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--gray-100);
+  }
+  .btn-back {
+    padding: 10px 20px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    color: var(--gray-600);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+  .btn-back:hover { background: var(--gray-50); }
+  .btn-primary {
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #254D98 0%, #2F5FB8 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.92; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="brand">Bharat Connect</span>
+  <a href="/ui/register.html" class="back-link">← Back</a>
+</header>
+
+<div class="page">
+  <div class="stepper">
+    <div class="step-item active">
+      <div class="step-circle">1</div>
+      <div class="step-label">Business<br>Profile</div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle">2</div>
+      <div class="step-label">Technical<br>Setup</div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle">3</div>
+      <div class="step-label">Volume &<br>Scale</div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle">4</div>
+      <div class="step-label">Review</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step-eyebrow">Step 1 of 4</div>
+    <h2>Your business profile</h2>
+    <p class="subtitle">This helps us match you to the right integration path</p>
+
+    <div class="field-group">
+      <label class="field-label">Entity Type</label>
+      <div class="pill-group" id="entity-type">
+        <div class="pill selected" onclick="selectPill(this, 'entity-type')">Pvt Ltd</div>
+        <div class="pill" onclick="selectPill(this, 'entity-type')">LLP</div>
+        <div class="pill" onclick="selectPill(this, 'entity-type')">Society</div>
+        <div class="pill" onclick="selectPill(this, 'entity-type')">Trust</div>
+        <div class="pill" onclick="selectPill(this, 'entity-type')">Government</div>
+        <div class="pill" onclick="selectPill(this, 'entity-type')">Other</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Industry Category</label>
+      <select class="styled-select" id="industry">
+        <option>Select your industry</option>
+        <option>Electricity</option>
+        <option>Water</option>
+        <option>Gas</option>
+        <option>Telecom</option>
+        <option>Education</option>
+        <option>Insurance</option>
+        <option>Real Estate</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Where do you currently store bill data?</label>
+      <div class="grid-cards" id="data-source">
+        <div class="grid-card" onclick="selectCard(this, 'data-source')">
+          <div class="gc-icon">📊</div>
+          <div class="gc-title">CSV/Excel</div>
+          <div class="gc-sub">Spreadsheet files</div>
+        </div>
+        <div class="grid-card selected" onclick="selectCard(this, 'data-source')">
+          <div class="gc-icon">🗄️</div>
+          <div class="gc-title">Database</div>
+          <div class="gc-sub">SQL/NoSQL database</div>
+        </div>
+        <div class="grid-card" onclick="selectCard(this, 'data-source')">
+          <div class="gc-icon">💼</div>
+          <div class="gc-title">ERP/Software</div>
+          <div class="gc-sub">Business software</div>
+        </div>
+        <div class="grid-card" onclick="selectCard(this, 'data-source')">
+          <div class="gc-icon">📄</div>
+          <div class="gc-title">Paper/Manual</div>
+          <div class="gc-sub">Physical records</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Do you have an in-house technical team?</label>
+      <div class="pill-group" id="tech-team">
+        <div class="pill" onclick="selectPill(this, 'tech-team')">Yes, dedicated team</div>
+        <div class="pill selected" onclick="selectPill(this, 'tech-team')">Yes, shared resource</div>
+        <div class="pill" onclick="selectPill(this, 'tech-team')">No tech team</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">How many bills do you generate per month?</label>
+      <select class="styled-select" id="bill-volume">
+        <option>Under 500</option>
+        <option>500–5,000</option>
+        <option selected>5,000–50,000</option>
+        <option>50,000–5L</option>
+        <option>Above 5L</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">What type of bills do you issue?</label>
+      <div class="pill-group" id="bill-type">
+        <div class="pill" onclick="togglePill(this)">Electricity</div>
+        <div class="pill selected" onclick="togglePill(this)">Telecom</div>
+        <div class="pill" onclick="togglePill(this)">Water</div>
+        <div class="pill" onclick="togglePill(this)">Gas</div>
+        <div class="pill" onclick="togglePill(this)">Postpaid</div>
+        <div class="pill" onclick="togglePill(this)">Prepaid</div>
+        <div class="pill" onclick="togglePill(this)">Other</div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-back" onclick="window.location.href='/ui/register.html'">← Back</button>
+      <button class="btn-primary" onclick="generatePlan()">Generate Advisory Plan →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function selectPill(el, groupId) {
+  document.querySelectorAll(`#${groupId} .pill`).forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function togglePill(el) {
+  el.classList.toggle('selected');
+}
+
+function selectCard(el, groupId) {
+  document.querySelectorAll(`#${groupId} .grid-card`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function generatePlan() {
+  const entityType = document.querySelector('#entity-type .selected')?.textContent;
+  const industry = document.getElementById('industry').value;
+  const dataSource = document.querySelector('#data-source .selected .gc-title')?.textContent;
+  const techTeam = document.querySelector('#tech-team .selected')?.textContent;
+  const billVolume = document.getElementById('bill-volume').value;
+  const billTypes = [...document.querySelectorAll('#bill-type .selected')].map(p => p.textContent);
+
+  sessionStorage.setItem('entity_type', entityType || 'Pvt Ltd');
+  sessionStorage.setItem('industry', industry);
+  sessionStorage.setItem('data_source', dataSource || 'Database');
+  sessionStorage.setItem('tech_team', techTeam || 'Yes, shared resource');
+  sessionStorage.setItem('bill_volume', billVolume);
+  sessionStorage.setItem('bill_types', billTypes.join(', '));
+
+  window.location.href = '/ui/advisory.html';
+}
+</script>
+</body>
+</html>

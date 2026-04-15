@@ -1,0 +1,8 @@
+[
+  {
+    "bou_id": "BOU001",
+    "bou_name": "BBPS Platform BOU",
+    "bou_endpoint": "http://localhost:8000/bou",
+    "description": "Default BOU for POC"
+  }
+]

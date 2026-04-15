@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deploy Integrator — Bharat Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --blue:#2F5FB8; --blue-dark:#254D98; --blue-light:#EBF0FB; --orange:#FF6A1A; --orange-light:#FFF1E9; --green:#16A34A; --green-light:#DCFCE7; --red:#DC2626; --red-light:#FEE2E2; --gray-50:#F8FAFC; --gray-100:#F1F5F9; --gray-200:#E2E8F0; --gray-400:#94A3B8; --gray-600:#475569; --gray-800:#1E293B; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--gray-50); color:var(--gray-800); min-height:100vh; }
+  header { background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 48px; }
+  .brand { color:white; font-size:18px; font-weight:600; }
+  .header-center { font-family:'DM Mono',monospace; font-size:12px; color:white; background:rgba(255,255,255,0.15); padding:5px 14px; border-radius:20px; }
+  .back-link { color:rgba(255,255,255,0.8); text-decoration:none; font-size:14px; }
+  .page { max-width:800px; margin:0 auto; padding:32px 24px 80px; }
+  .identity-strip { background:white; border:1px solid var(--gray-200); border-radius:12px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .id-left .company-name { font-size:15px; font-weight:600; }
+  .id-left .session-id { font-family:'DM Mono',monospace; font-size:12px; color:var(--gray-400); margin-top:2px; }
+  .badge-pending { background:var(--orange-light); color:var(--orange); font-size:12px; font-family:'DM Mono',monospace; padding:4px 12px; border-radius:20px; }
+  .badge-active { background:var(--green-light); color:var(--green); font-size:12px; font-family:'DM Mono',monospace; padding:4px 12px; border-radius:20px; display:none; }
+  .card { background:white; border-radius:14px; padding:28px; box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-bottom:20px; }
+  .download-inner { display:grid; grid-template-columns:1fr auto; gap:24px; align-items:start; }
+  .dl-icon { width:52px; height:52px; background:var(--orange-light); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:14px; }
+  .dl-title { font-size:18px; font-weight:600; margin-bottom:8px; }
+  .dl-desc { font-size:14px; color:var(--gray-600); line-height:1.6; margin-bottom:12px; }
+  .tech-pills { display:flex; gap:8px; }
+  .tech-pill { background:var(--gray-100); color:var(--gray-600); font-size:12px; font-family:'DM Mono',monospace; padding:4px 10px; border-radius:6px; }
+  .dl-buttons { display:flex; flex-direction:column; gap:10px; min-width:180px; }
+  .btn-dl-primary { display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; text-decoration:none; transition:opacity 0.15s; }
+  .btn-dl-primary:hover { opacity:0.9; }
+  .btn-dl-secondary { display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 20px; background:white; color:var(--blue); border:1.5px solid var(--blue); border-radius:8px; font-size:14px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; text-decoration:none; transition:all 0.15s; }
+  .btn-dl-secondary:hover { background:var(--blue-light); }
+  .dl-version { text-align:center; font-size:11px; color:var(--gray-400); font-family:'DM Mono',monospace; margin-top:4px; }
+  .steps-title { font-size:16px; font-weight:600; }
+  .steps-sub { font-size:13px; color:var(--gray-400); margin-top:2px; margin-bottom:20px; }
+  .step-row { display:flex; gap:16px; margin-bottom:24px; }
+  .step-row:last-child { margin-bottom:0; }
+  .step-num { width:32px; height:32px; border-radius:50%; background:var(--blue-light); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; font-family:'DM Mono',monospace; flex-shrink:0; margin-top:2px; }
+  .step-body { flex:1; }
+  .step-title { font-size:14px; font-weight:600; margin-bottom:4px; }
+  .step-desc { font-size:13px; color:var(--gray-600); margin-bottom:10px; line-height:1.5; }
+  .code-block { background:#1E293B; border-radius:8px; padding:14px 16px; position:relative; margin-top:8px; }
+  .code-text { font-family:'DM Mono',monospace; font-size:12px; color:#E2E8F0; line-height:1.7; white-space:pre; }
+  .copy-btn { position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.1); border:none; border-radius:4px; color:var(--gray-400); font-size:11px; font-family:'DM Sans',monospace; padding:3px 8px; cursor:pointer; display:flex; align-items:center; gap:4px; }
+  .copy-btn:hover { background:rgba(255,255,255,0.2); color:white; }
+  .info-note { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--gray-600); margin-top:8px; }
+  .expected-pill { display:inline-block; background:var(--green-light); color:var(--green); font-size:12px; font-family:'DM Mono',monospace; padding:4px 10px; border-radius:6px; margin-top:8px; }
+  .register-card { border-top:3px solid var(--orange); }
+  .register-title { font-size:16px; font-weight:600; margin-bottom:4px; }
+  .register-sub { font-size:13px; color:var(--gray-600); margin-bottom:20px; line-height:1.5; }
+  .endpoint-row { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:flex-end; margin-bottom:4px; }
+  .form-group label { display:block; font-size:12px; font-weight:500; color:var(--gray-600); margin-bottom:6px; }
+  .form-group input, .form-group select { width:100%; height:48px; padding:0 16px; border:1.5px solid var(--gray-200); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:var(--gray-800); outline:none; transition:border-color 0.15s; background:white; }
+  .form-group input:focus, .form-group select:focus { border-color:var(--blue); }
+  .form-group input::placeholder { color:var(--gray-400); }
+  .btn-test { height:48px; padding:0 20px; border:1.5px solid var(--blue); background:white; color:var(--blue); border-radius:8px; font-size:14px; font-weight:500; font-family:'DM Sans',sans-serif; cursor:pointer; white-space:nowrap; transition:all 0.15s; }
+  .btn-test:hover { background:var(--blue-light); }
+  .connection-banner { padding:12px 16px; border-radius:8px; font-size:13px; display:none; align-items:center; gap:8px; margin-top:10px; }
+  .connection-banner.success { display:flex; background:var(--green-light); border:1px solid #86EFAC; color:var(--green); }
+  .connection-banner.error { display:flex; background:var(--red-light); border:1px solid #FECACA; color:var(--red); }
+  .bou-row { margin-top:16px; }
+  .submit-btn { width:100%; height:52px; margin-top:20px; background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); color:white; border:none; border-radius:8px; font-size:15px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; transition:opacity 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .submit-btn:hover { opacity:0.92; }
+  .submit-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .submit-note { text-align:center; font-size:12px; color:var(--gray-400); margin-top:8px; }
+  .success-overlay { display:none; background:var(--green-light); border:1.5px solid #86EFAC; border-radius:14px; padding:40px; text-align:center; margin-top:20px; }
+  .success-overlay.show { display:block; }
+  .success-icon { font-size:48px; margin-bottom:16px; }
+  .success-overlay h2 { font-size:22px; font-weight:600; color:var(--green); margin-bottom:8px; }
+  .success-id { font-family:'DM Mono',monospace; font-size:22px; color:var(--blue-dark); background:white; border:1px solid #86EFAC; padding:12px 24px; border-radius:8px; display:inline-block; margin:12px 0 20px; letter-spacing:2px; }
+  .success-actions { display:flex; justify-content:center; gap:12px; }
+  .btn-go { padding:12px 24px; background:linear-gradient(135deg,#254D98 0%,#2F5FB8 100%); color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; font-family:'DM Sans',sans-serif; cursor:pointer; text-decoration:none; }
+  .loading { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .error-banner { background:var(--red-light); border:1px solid #FECACA; color:var(--red); font-size:13px; padding:12px 16px; border-radius:8px; margin-bottom:16px; display:none; }
+  .error-banner.show { display:block; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="brand">Bharat Connect</span>
+  <span class="header-center">Step 3 of 8 · Deploy Integrator</span>
+  <a href="/ui/advisory.html" class="back-link">← Back to Plan</a>
+</header>
+
+<div class="page">
+  <div class="error-banner" id="error-banner"></div>
+
+  <div class="identity-strip">
+    <div class="id-left">
+      <div class="company-name" id="strip-company">Loading...</div>
+      <div class="session-id" id="strip-session">Session: —</div>
+    </div>
+    <span class="badge-pending" id="badge-pending">● Pending Activation</span>
+    <span class="badge-active" id="badge-active">● Biller ID Active</span>
+  </div>
+
+  <!-- Download card -->
+  <div class="card">
+    <div class="download-inner">
+      <div>
+        <div class="dl-icon">📥</div>
+        <div class="dl-title">BBPS Biller Integrator</div>
+        <div class="dl-desc">A pre-configured Spring Boot service that acts as your integration layer with the BBPS network. Fork it, configure it, and run it on your infrastructure.</div>
+        <div class="tech-pills"><span class="tech-pill">Java 17 · Spring Boot</span><span class="tech-pill">PostgreSQL</span></div>
+      </div>
+      <div class="dl-buttons">
+        <a href="#" class="btn-dl-primary">📥 Download .zip</a>
+        <a href="https://github.com" target="_blank" class="btn-dl-secondary">🔗 Fork on GitHub</a>
+        <div class="dl-version">v0.1.0 · POC Release</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup steps -->
+  <div class="card">
+    <div class="steps-title">Configure Your Instance</div>
+    <div class="steps-sub">Follow these steps in order</div>
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Edit application.properties</div>
+        <div class="step-desc">Set your database connection, port, and OU identifier.</div>
+        <div class="code-block"><pre class="code-text">server.port=8111
+spring.datasource.url=jdbc:postgresql://
+  localhost:5432/yourdb
+ou.id=BBPS001
+cu.domain=http://localhost:8112</pre><button class="copy-btn" onclick="copyCode(this,'server.port=8111\nspring.datasource.url=jdbc:postgresql://localhost:5432/yourdb\nou.id=BBPS001\ncu.domain=http://localhost:8112')">📋 Copy</button></div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Create your PostgreSQL schema</div>
+        <div class="step-desc">Run the included schema.sql against your database.</div>
+        <div class="code-block"><pre class="code-text">psql -U postgres -d yourdb -f schema.sql</pre><button class="copy-btn" onclick="copyCode(this,'psql -U postgres -d yourdb -f schema.sql')">📋 Copy</button></div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Run the Spring Boot application</div>
+        <div class="step-desc">The integrator will start on your configured port.</div>
+        <div class="code-block"><pre class="code-text">mvn spring-boot:run</pre><button class="copy-btn" onclick="copyCode(this,'mvn spring-boot:run')">📋 Copy</button></div>
+        <div class="info-note">ℹ️ Requires Java 17 and Maven installed</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Test the heartbeat endpoint</div>
+        <div class="step-desc">Confirm your instance is reachable before submitting.</div>
+        <div class="code-block"><pre class="code-text">curl http://localhost:8111/heartbeat</pre><button class="copy-btn" onclick="copyCode(this,'curl http://localhost:8111/heartbeat')">📋 Copy</button></div>
+        <div class="expected-pill">Expected: HTTP 200</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register endpoint -->
+  <div class="card register-card" id="register-card">
+    <div class="register-title">Register Your Endpoint</div>
+    <div class="register-sub">Once your integrator is running, submit its URL to generate your Biller ID and activate routing on the BBPS platform.</div>
+    <div class="endpoint-row">
+      <div class="form-group">
+        <label>Your Integrator Endpoint URL</label>
+        <input type="text" id="endpoint-url" placeholder="http://your-server:8111">
+      </div>
+      <button class="btn-test" onclick="testConnection()">Test Connection</button>
+    </div>
+    <div class="connection-banner" id="conn-banner"></div>
+    <div class="bou-row">
+      <div class="form-group">
+        <label>Assign to BOU</label>
+        <select id="bou-select">
+          <option value="BOU001">BOU001 — BBPS Platform BOU</option>
+          <option value="BOU002">BOU002 — Razorpay BillDesk</option>
+          <option value="BOU003">BOU003 — PayU BOU Services</option>
+        </select>
+      </div>
+    </div>
+    <button class="submit-btn" id="submit-btn" disabled onclick="submitEndpoint()">Submit Endpoint & Activate →</button>
+    <div class="submit-note">Your Biller ID will be generated and routing activated within seconds.</div>
+  </div>
+
+  <!-- Success -->
+  <div class="success-overlay" id="success-overlay">
+    <div class="success-icon">🎉</div>
+    <h2>You're Live on BBPS!</h2>
+    <p style="font-size:14px; color:var(--green); margin-bottom:4px">Your Biller ID</p>
+    <div class="success-id" id="success-biller-id">—</div>
+    <p style="font-size:13px; color:var(--gray-600); margin-bottom:20px">Routing is active. You can now fetch and process bill payments through the BBPS network.</p>
+    <div class="success-actions">
+      <a href="/ui/dashboard.html" class="btn-go">Go to Dashboard →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_KEY = 'POC-PLATFORM-KEY-001';
+let connectionVerified = false;
+
+window.onload = function() {
+  const sessionId = sessionStorage.getItem('session_id');
+  const bizName = sessionStorage.getItem('biz_name') || 'Your Company';
+  const bou = sessionStorage.getItem('selected_bou') || 'BOU001';
+
+  if (!sessionId) { window.location.href = '/ui/register.html'; return; }
+
+  document.getElementById('strip-company').textContent = bizName;
+  document.getElementById('strip-session').textContent = 'Session: ' + sessionId.substring(0,8) + '...';
+  document.getElementById('bou-select').value = bou;
+};
+
+async function testConnection() {
+  const endpoint = document.getElementById('endpoint-url').value.trim();
+  if (!endpoint) { alert('Enter an endpoint URL first'); return; }
+
+  const btn = document.querySelector('.btn-test');
+  const banner = document.getElementById('conn-banner');
+  btn.textContent = 'Testing...';
+  btn.disabled = true;
+
+  try {
+    // Hit our platform's biller endpoint update which checks heartbeat
+    // For demo, accept any valid URL format
+    if (!endpoint.startsWith('http')) throw new Error('Invalid URL');
+
+    connectionVerified = true;
+    banner.className = 'connection-banner success';
+    banner.innerHTML = '✓ Endpoint format valid — ready to register';
+    document.getElementById('submit-btn').disabled = false;
+  } catch(e) {
+    banner.className = 'connection-banner error';
+    banner.innerHTML = '✗ ' + e.message + '. Check that your integrator is running.';
+  }
+
+  btn.textContent = 'Test Connection';
+  btn.disabled = false;
+}
+
+async function submitEndpoint() {
+  const endpoint = document.getElementById('endpoint-url').value.trim();
+  const bouId = document.getElementById('bou-select').value;
+  const sessionId = sessionStorage.getItem('session_id');
+  const btn = document.getElementById('submit-btn');
+
+  if (!sessionId) { showError('No active session. Please start from the beginning.'); return; }
+
+  btn.innerHTML = '<span class="loading"></span> Generating Biller ID...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/onboard/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+      body: JSON.stringify({ session_id: sessionId, biller_endpoint: endpoint, bou_id: bouId })
+    });
+
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || 'Registration failed');
+
+    // Store biller ID
+    sessionStorage.setItem('biller_id', data.biller_id);
+
+    // Update UI
+    document.getElementById('register-card').style.display = 'none';
+    document.getElementById('success-biller-id').textContent = data.biller_id;
+    document.getElementById('success-overlay').classList.add('show');
+    document.getElementById('badge-pending').style.display = 'none';
+    document.getElementById('badge-active').style.display = 'inline-block';
+
+  } catch(e) {
+    showError('Registration failed: ' + e.message);
+    btn.innerHTML = 'Submit Endpoint & Activate →';
+    btn.disabled = false;
+  }
+}
+
+function copyCode(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied';
+    setTimeout(() => btn.innerHTML = '📋 Copy', 1500);
+  });
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-banner');
+  el.textContent = msg;
+  el.classList.add('show');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+{
+  "journey_variant": "S1_MICRO_OFFLINE",
+  "segment_label": "S1: Micro Offline",
+  "summary": {
+    "total_time": "50 minutes",
+    "steps_completed": "7 of 7",
+    "steps_waived": "6 enterprise steps waived",
+    "activation_time": "Within 24 hours"
+  },
+  "steps": [
+    {
+      "id": 1,
+      "code": "SEGMENT",
+      "title": "You are classified as Micro Offline Biller",
+      "subtitle": "S1 Segment · Simplified Journey",
+      "duration": "1 min",
+      "description": "Based on your inputs, we identified the simplest onboarding path: no API development and no technical integration required.",
+      "highlights": [
+        { "label": "Billing Volume", "value": "< 500 bills/month", "ok": true },
+        { "label": "Technical Setup", "value": "App-based only", "ok": true },
+        { "label": "API Required", "value": "None", "ok": true },
+        { "label": "UAT / Testing", "value": "Waived", "ok": true }
+      ],
+      "waived_steps": [
+        "API Development & Integration",
+        "mTLS Certificate Setup",
+        "Bill Fetch API Testing",
+        "Security Penetration Testing",
+        "CERT-In Audit",
+        "Audited Financial Statements"
+      ],
+      "tip": "Your onboarding can complete in under one hour and go live in 24 hours.",
+      "steps": [
+        "Verify Identity (Aadhaar eKYC)",
+        "Enter Business Details",
+        "Link Bank Account",
+        "Configure Bill Fields",
+        "e-Sign Agreement",
+        "Upload Bills",
+        "Go Live"
+      ]
+    },
+    {
+      "id": 2,
+      "code": "IDENTITY",
+      "title": "Verify Your Identity",
+      "subtitle": "Step 1 of 7",
+      "duration": "5 min",
+      "description": "Use Aadhaar OTP based eKYC verification to validate identity quickly.",
+      "steps": [
+        "Provide Aadhaar-linked mobile number.",
+        "Complete OTP verification.",
+        "Confirm Aadhaar details for eKYC."
+      ],
+      "tip": "Identity details are verified only for onboarding and should not be retained in advisory mode."
+    },
+    {
+      "id": 3,
+      "code": "BUSINESS",
+      "title": "Share Business Details",
+      "subtitle": "Step 2 of 7",
+      "duration": "10 min",
+      "description": "Collect business profile and auto-map BBPS category for onboarding.",
+      "steps": [
+        "Provide business/entity name and type.",
+        "Describe bill type in plain language.",
+        "Add operating state and optional GSTIN."
+      ]
+    },
+    {
+      "id": 4,
+      "code": "BANK",
+      "title": "Link Settlement Account",
+      "subtitle": "Step 3 of 7",
+      "duration": "5 min",
+      "description": "Verify bank account using penny-drop to enable settlements.",
+      "steps": [
+        "Provide account holder name, account number, and IFSC.",
+        "Run penny-drop verification.",
+        "Confirm account status before submission."
+      ]
+    },
+    {
+      "id": 5,
+      "code": "FIELDS",
+      "title": "Configure Bill Fields",
+      "subtitle": "Step 4 of 7",
+      "duration": "10 min",
+      "description": "Choose simple customer identifiers for bill fetch in payment apps.",
+      "steps": [
+        "Select bill template (consumer number/mobile/etc.).",
+        "Preview fields shown to customers.",
+        "Save selected bill field template."
+      ]
+    },
+    {
+      "id": 6,
+      "code": "AGREEMENT",
+      "title": "Sign Biller Agreement",
+      "subtitle": "Step 5 of 7",
+      "duration": "5 min",
+      "description": "Review and e-sign standard micro biller agreement.",
+      "steps": [
+        "Review key terms (settlement, dispute SLA, validity).",
+        "Accept onboarding terms.",
+        "Complete Aadhaar OTP e-sign."
+      ]
+    },
+    {
+      "id": 7,
+      "code": "UPLOAD",
+      "title": "Upload First Bill Set",
+      "subtitle": "Step 6 of 7",
+      "duration": "15 min",
+      "description": "Upload initial bills through photo, CSV, or manual entry.",
+      "steps": [
+        "Choose upload method: photo, CSV, or manual.",
+        "Upload consumer references and due amounts.",
+        "Validate records before activation."
+      ]
+    },
+    {
+      "id": 8,
+      "code": "GOLIVE",
+      "title": "Go Live on BBPS",
+      "subtitle": "Step 7 of 7",
+      "duration": "Automated",
+      "description": "After checks complete, biller profile is activated across BBPS channels.",
+      "steps": [
+        "Confirm activation status from dashboard.",
+        "Monitor settlements and payment notifications.",
+        "Upload future bill cycles regularly."
+      ],
+      "tip": "Share biller name with customers so they can discover and pay from any BBPS app."
+    }
+  ]
+}

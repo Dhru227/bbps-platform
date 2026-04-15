@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Onboarding — BBPS Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2F5FB8;
+    --blue-dark: #254D98;
+    --blue-light: #EBF0FB;
+    --orange: #FF6A1A;
+    --orange-light: #FFF1E9;
+    --green: #16A34A;
+    --green-light: #DCFCE7;
+    --white: #FFFFFF;
+    --gray-50: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-400: #94A3B8;
+    --gray-600: #475569;
+    --gray-800: #1E293B;
+    --header-gradient: linear-gradient(135deg, #254D98 0%, #2F5FB8 100%);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--gray-800); height: 100vh; display: flex; flex-direction: column; }
+
+  header {
+    background: var(--header-gradient);
+    padding: 0 48px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(37,77,152,0.18);
+    flex-shrink: 0;
+  }
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+  .logo-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: white; }
+  .logo-text { color: white; font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .header-badge { background: rgba(255,255,255,0.15); color: white; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; }
+  .back-link { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; }
+  .back-link:hover { color: white; }
+
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    flex: 1;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  /* Chat panel */
+  .chat-panel {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-right: 1px solid var(--gray-200);
+  }
+
+  .chat-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--gray-200);
+    flex-shrink: 0;
+  }
+  .chat-header h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 4px; }
+  .chat-header p { font-size: 13px; color: var(--gray-600); }
+
+  .stage-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 32px;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    flex-shrink: 0;
+  }
+  .stage-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--gray-400);
+  }
+  .stage-step.active { color: var(--blue); font-weight: 500; }
+  .stage-step.done { color: var(--green); }
+  .stage-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; flex-shrink: 0; }
+  .stage-sep { flex: 1; height: 1px; background: var(--gray-200); max-width: 32px; }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .message { display: flex; gap: 10px; max-width: 85%; }
+  .message.user { align-self: flex-end; flex-direction: row-reverse; }
+  .message.assistant { align-self: flex-start; }
+
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .message.assistant .msg-avatar { background: var(--blue-light); color: var(--blue); }
+  .message.user .msg-avatar { background: var(--orange-light); color: var(--orange); }
+
+  .msg-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .message.assistant .msg-bubble { background: var(--gray-100); color: var(--gray-800); border-bottom-left-radius: 4px; }
+  .message.user .msg-bubble { background: var(--blue); color: white; border-bottom-right-radius: 4px; }
+
+  .typing-indicator {
+    display: none;
+    align-self: flex-start;
+    align-items: center;
+    gap: 10px;
+  }
+  .typing-indicator.show { display: flex; }
+  .typing-dots { display: flex; gap: 4px; padding: 12px 16px; background: var(--gray-100); border-radius: 16px; border-bottom-left-radius: 4px; }
+  .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gray-400); animation: bounce 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  .chat-input-area {
+    padding: 20px 32px;
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    resize: none;
+    transition: border-color 0.15s;
+    height: 48px;
+  }
+  .chat-input:focus { border-color: var(--blue); }
+  .chat-input:disabled { background: var(--gray-50); color: var(--gray-400); }
+  .send-btn {
+    width: 48px;
+    height: 48px;
+    background: var(--header-gradient);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { opacity: 0.9; }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Right panel */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: var(--gray-50);
+  }
+
+  .panel-section {
+    padding: 24px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .panel-section h3 { font-size: 12px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; margin-bottom: 16px; }
+
+  .extracted-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .extracted-field .field-label { color: var(--gray-600); }
+  .extracted-field .field-value { font-weight: 500; color: var(--gray-800); font-family: 'DM Mono', monospace; font-size: 12px; }
+  .extracted-field .field-empty { color: var(--gray-400); font-style: italic; }
+
+  .registration-form { padding: 24px; }
+  .registration-form h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .registration-form p { font-size: 13px; color: var(--gray-600); margin-bottom: 20px; line-height: 1.5; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--gray-600); margin-bottom: 5px; }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    background: white;
+    transition: border-color 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--blue); }
+  .form-group input:disabled { background: var(--gray-50); color: var(--gray-400); }
+
+  .register-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--header-gradient);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .register-btn:hover { opacity: 0.92; }
+  .register-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .success-card {
+    display: none;
+    margin: 24px;
+    padding: 24px;
+    background: var(--green-light);
+    border: 1.5px solid #86EFAC;
+    border-radius: 16px;
+    text-align: center;
+  }
+  .success-card.show { display: block; }
+  .success-icon { font-size: 36px; margin-bottom: 12px; }
+  .success-card h3 { font-size: 16px; font-weight: 600; color: var(--green); margin-bottom: 8px; }
+  .biller-id-badge {
+    display: inline-block;
+    background: white;
+    border: 1px solid #86EFAC;
+    color: var(--green);
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin: 8px 0 16px;
+    letter-spacing: 1px;
+  }
+  .go-dashboard-btn {
+    display: inline-block;
+    background: var(--green);
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .loading { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .not-ready-note { font-size: 12px; color: var(--gray-400); text-align: center; padding: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-icon">B</div>
+    <span class="logo-text">Bharat Connect</span>
+  </div>
+  <div class="header-right">
+    <a href="/ui/index.html" class="back-link">← Home</a>
+    <span class="header-badge">AI Onboarding</span>
+  </div>
+</header>
+
+<div class="main-layout">
+
+  <!-- Chat Panel -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <h2>BBPS Biller Onboarding Assistant</h2>
+      <p>AI-powered intake — tell us about your organization</p>
+    </div>
+
+    <div class="stage-indicator">
+      <div class="stage-step active" id="stage-1">
+        <div class="stage-dot">1</div> Intake
+      </div>
+      <div class="stage-sep"></div>
+      <div class="stage-step" id="stage-2">
+        <div class="stage-dot">2</div> Review
+      </div>
+      <div class="stage-sep"></div>
+      <div class="stage-step" id="stage-3">
+        <div class="stage-dot">3</div> Register
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div style="text-align:center; color: var(--gray-400); font-size: 13px; padding: 20px;">Starting session...</div>
+    </div>
+
+    <div class="typing-indicator" id="typing">
+      <div class="msg-avatar" style="background: var(--blue-light); color: var(--blue);">🤖</div>
+      <div class="typing-dots">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" id="chat-input" placeholder="Type your message..." disabled>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled>↑</button>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
+
+    <div class="panel-section">
+      <h3>Extracted Info</h3>
+      <div class="extracted-field">
+        <span class="field-label">Biller Name</span>
+        <span class="field-value field-empty" id="ext-name">Not yet collected</span>
+      </div>
+      <div class="extracted-field">
+        <span class="field-label">Category</span>
+        <span class="field-value field-empty" id="ext-category">Not yet collected</span>
+      </div>
+      <div class="extracted-field" style="margin-bottom:0">
+        <span class="field-label">Session ID</span>
+        <span class="field-value field-empty" id="ext-session" style="font-size:10px">—</span>
+      </div>
+    </div>
+
+    <div class="registration-form" id="reg-form" style="display:none">
+      <h3>Complete Registration</h3>
+      <p>AI has collected your details. Provide your integrator endpoint and BOU to get your Biller ID.</p>
+
+      <div class="form-group">
+        <label>Biller Name</label>
+        <input type="text" id="reg-biller-name" disabled>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" id="reg-category" disabled>
+      </div>
+      <div class="form-group">
+        <label>Integrator Endpoint URL</label>
+        <input type="text" id="reg-endpoint" placeholder="e.g. http://localhost:8113">
+      </div>
+      <div class="form-group">
+        <label>BOU</label>
+        <select id="reg-bou">
+          <option value="BOU001">BOU001 — BBPS Platform BOU</option>
+        </select>
+      </div>
+
+      <button class="register-btn" id="register-btn" onclick="doRegister()">
+        Generate Biller ID
+      </button>
+    </div>
+
+    <div class="not-ready-note" id="not-ready-note">
+      Complete the chat to unlock registration
+    </div>
+
+    <div class="success-card" id="success-card">
+      <div class="success-icon">🎉</div>
+      <h3>Registration Complete!</h3>
+      <p style="font-size:13px; color: var(--green); margin-bottom:4px">Your Biller ID</p>
+      <div class="biller-id-badge" id="success-biller-id">—</div>
+      <br>
+      <a href="/ui/dashboard.html" class="go-dashboard-btn">View in Dashboard →</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_KEY = 'POC-PLATFORM-KEY-001';
+let sessionId = null;
+let isCollected = false;
+
+async function startSession() {
+  try {
+    const r = await fetch('/onboard/start', { method: 'POST' });
+    const data = await r.json();
+    sessionId = data.session_id;
+
+    document.getElementById('ext-session').textContent = sessionId.substring(0, 8) + '...';
+    document.getElementById('ext-session').className = 'field-value';
+
+    addMessage('assistant', data.message);
+    document.getElementById('chat-input').disabled = false;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('chat-input').focus();
+
+    const msgs = document.getElementById('messages');
+    msgs.innerHTML = '';
+    addMessage('assistant', data.message);
+  } catch(e) {
+    document.getElementById('messages').innerHTML = `<div style="text-align:center; color: var(--red); font-size:13px; padding:20px;">Could not connect to platform. Is it running on port 8000?</div>`;
+  }
+}
+
+function addMessage(role, text) {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `message ${role}`;
+  div.innerHTML = `
+    <div class="msg-avatar">${role === 'assistant' ? '🤖' : '👤'}</div>
+    <div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg || !sessionId) return;
+
+  addMessage('user', msg);
+  input.value = '';
+  input.disabled = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('typing').classList.add('show');
+
+  try {
+    const r = await fetch('/onboard/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, message: msg })
+    });
+    const data = await r.json();
+
+    document.getElementById('typing').classList.remove('show');
+    addMessage('assistant', data.reply);
+
+    if (data.stage === 'COLLECTED' || data.is_complete) {
+      await checkExtracted();
+    }
+
+  } catch(e) {
+    document.getElementById('typing').classList.remove('show');
+    addMessage('assistant', 'Sorry, something went wrong. Please try again.');
+  }
+
+  input.disabled = false;
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+}
+
+async function checkExtracted() {
+  try {
+    const r = await fetch(`/onboard/session/${sessionId}`, { headers: { 'X-API-Key': API_KEY } });
+    if (r.ok) {
+      const data = await r.json();
+      if (data.biller_name && data.biller_name !== 'Unknown') {
+        showExtracted(data.biller_name, data.category);
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // Fallback: parse from session via billers endpoint
+  showRegistrationForm('', '');
+}
+
+function showExtracted(name, category) {
+  document.getElementById('ext-name').textContent = name;
+  document.getElementById('ext-name').className = 'field-value';
+  document.getElementById('ext-category').textContent = category;
+  document.getElementById('ext-category').className = 'field-value';
+
+  showRegistrationForm(name, category);
+}
+
+function showRegistrationForm(name, category) {
+  isCollected = true;
+
+  document.getElementById('stage-1').className = 'stage-step done';
+  document.getElementById('stage-1').querySelector('.stage-dot').textContent = '✓';
+  document.getElementById('stage-2').className = 'stage-step active';
+
+  document.getElementById('not-ready-note').style.display = 'none';
+  document.getElementById('reg-form').style.display = 'block';
+  document.getElementById('reg-biller-name').value = name;
+  document.getElementById('reg-category').value = category;
+}
+
+async function doRegister() {
+  const endpoint = document.getElementById('reg-endpoint').value.trim();
+  const bouId = document.getElementById('reg-bou').value;
+  const btn = document.getElementById('register-btn');
+
+  if (!endpoint) {
+    alert('Please enter the integrator endpoint URL');
+    return;
+  }
+
+  btn.innerHTML = '<span class="loading"></span> Registering...';
+  btn.disabled = true;
+
+  document.getElementById('stage-2').className = 'stage-step done';
+  document.getElementById('stage-2').querySelector('.stage-dot').textContent = '✓';
+  document.getElementById('stage-3').className = 'stage-step active';
+
+  try {
+    const r = await fetch('/onboard/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+      body: JSON.stringify({ session_id: sessionId, biller_endpoint: endpoint, bou_id: bouId })
+    });
+    const data = await r.json();
+
+    if (!r.ok) throw new Error(data.detail || 'Registration failed');
+
+    document.getElementById('stage-3').className = 'stage-step done';
+    document.getElementById('stage-3').querySelector('.stage-dot').textContent = '✓';
+
+    document.getElementById('reg-form').style.display = 'none';
+    document.getElementById('success-biller-id').textContent = data.biller_id;
+    document.getElementById('success-card').classList.add('show');
+
+    document.getElementById('ext-name').textContent = document.getElementById('reg-biller-name').value;
+    document.getElementById('ext-category').textContent = document.getElementById('reg-category').value;
+
+    document.getElementById('chat-input').disabled = true;
+    document.getElementById('send-btn').disabled = true;
+    addMessage('assistant', `✅ Registration complete! Your Biller ID is **${data.biller_id}**. You can now fetch and pay bills through the dashboard.`);
+
+  } catch(e) {
+    btn.innerHTML = 'Generate Biller ID';
+    btn.disabled = false;
+    document.getElementById('stage-3').className = 'stage-step';
+    document.getElementById('stage-2').className = 'stage-step active';
+    document.getElementById('stage-2').querySelector('.stage-dot').textContent = '2';
+    alert('Registration failed: ' + e.message);
+  }
+}
+
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+startSession();
+</script>
+</body>
+</html>

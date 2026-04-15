@@ -1,0 +1,99 @@
+{
+  "segment_by_volume": {
+    "lt_10000": "S6",
+    "10000_50000": "S5",
+    "50000_200000": "S4",
+    "200000_1000000": "S3",
+    "gt_1000000": "S2"
+  },
+  "timeline_by_segment": {
+    "S1": "4-6 weeks",
+    "S2": "5-7 weeks",
+    "S3": "6-8 weeks",
+    "S4": "8-10 weeks",
+    "S5": "10-12 weeks",
+    "S6": "12-14 weeks"
+  },
+  "common_documents": [
+    "Certificate of Incorporation / Registration",
+    "PAN and GST details",
+    "Authorized signatory details",
+    "Board resolution / authorization letter"
+  ],
+  "documents_by_tech_maturity": {
+    "no_api": [
+      "SFTP / file exchange readiness declaration",
+      "BOU hosted onboarding consent"
+    ],
+    "bou_hosted": [
+      "BOU hosted API onboarding checklist",
+      "IP whitelisting and callback details"
+    ],
+    "own_api": [
+      "Technical endpoint specification",
+      "Webhook and reconciliation file format"
+    ]
+  },
+  "obligations": [
+    "Guidance only; secure onboarding starts in authenticated workflow.",
+    "NBBL and BOU approvals are mandatory before production go-live."
+  ],
+  "journey_steps_by_segment": {
+    "S2": [
+      "Validate segment fit and target use case.",
+      "Finalize BOU shortlist with technical fit.",
+      "Complete legal and compliance pre-check.",
+      "Submit onboarding application package.",
+      "Complete technical design walkthrough with BOU.",
+      "Configure test endpoints and credentials.",
+      "Execute UAT scenarios and reconciliation checks.",
+      "Address gaps and submit closure evidence.",
+      "Obtain final sign-off and go-live window.",
+      "Start controlled production rollout."
+    ],
+    "S3": [
+      "Validate onboarding profile inputs.",
+      "Shortlist BOU options for API readiness.",
+      "Prepare compliance and mandate documents.",
+      "Submit application and dependency checklist.",
+      "Complete sandbox integration and callback setup.",
+      "Execute UAT scripts for bill lifecycle.",
+      "Perform reconciliation and settlement checks.",
+      "Close defects with evidence.",
+      "Obtain approvals and rollout plan.",
+      "Go live with hypercare monitoring."
+    ]
+  },
+  "size_specific_steps": {
+    "micro": [
+      "Use the lightweight fast-track checklist with minimal integration burden.",
+      "Prioritize hosted onboarding option to reduce upfront setup effort."
+    ],
+    "small": [
+      "Plan phased rollout starting with one category/state before expansion.",
+      "Assign one owner for compliance artefacts and one owner for technical readiness."
+    ]
+  },
+  "mode_specific_steps": {
+    "offline": [
+      "Define assisted digitization flow for offline bill presentment and reconciliation.",
+      "Prepare field-ops SOP for dispute and exception handling."
+    ],
+    "online": [
+      "Finalize API/webhook contract and callback retry policy early.",
+      "Set up dashboard-based monitoring for payment and reconciliation events."
+    ]
+  },
+  "default_journey_steps": [
+    "Validate biller profile and eligibility.",
+    "Choose onboarding model and BOU.",
+    "Prepare legal and compliance artefacts.",
+    "Submit onboarding request.",
+    "Complete technical setup.",
+    "Run UAT and certification.",
+    "Close pending observations.",
+    "Obtain go-live sign-off.",
+    "Enable production rollout.",
+    "Track early-life KPIs."
+  ]
+}

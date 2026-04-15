@@ -1,0 +1,22 @@
+{
+  "required_fields": [
+    "legal_entity_type",
+    "industry_category",
+    "biller_size",
+    "biller_mode",
+    "operating_coverage",
+    "monthly_bill_volume_band",
+    "tech_maturity",
+    "expected_tps_band"
+  ],
+  "field_labels": {
+    "legal_entity_type": "Legal entity type",
+    "industry_category": "Industry / business category",
+    "biller_size": "Biller size (micro/small/medium/large)",
+    "biller_mode": "Biller operating mode (online/offline/hybrid)",
+    "operating_coverage": "Operating coverage",
+    "monthly_bill_volume_band": "Monthly bill volume band",
+    "tech_maturity": "Technical maturity",
+    "expected_tps_band": "Expected TPS band"
+  }
+}

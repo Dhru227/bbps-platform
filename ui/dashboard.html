@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biller Dashboard — BBPS Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2F5FB8;
+    --blue-dark: #254D98;
+    --blue-light: #EBF0FB;
+    --orange: #FF6A1A;
+    --orange-light: #FFF1E9;
+    --green: #16A34A;
+    --green-light: #DCFCE7;
+    --red: #DC2626;
+    --red-light: #FEE2E2;
+    --white: #FFFFFF;
+    --gray-50: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-400: #94A3B8;
+    --gray-600: #475569;
+    --gray-800: #1E293B;
+    --header-gradient: linear-gradient(135deg, #254D98 0%, #2F5FB8 100%);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-50); color: var(--gray-800); min-height: 100vh; }
+
+  header {
+    background: var(--header-gradient);
+    padding: 0 48px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(37,77,152,0.18);
+  }
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+  .logo-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: white; }
+  .logo-text { color: white; font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .header-badge { background: rgba(255,255,255,0.15); color: white; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; }
+  .back-link { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; }
+  .back-link:hover { color: white; }
+
+  .page-content { max-width: 1100px; margin: 0 auto; padding: 40px 48px; }
+
+  .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+  .page-title h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .page-title p { font-size: 14px; color: var(--gray-600); }
+
+  .btn-primary {
+    background: var(--header-gradient);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stat-card { background: white; border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px 24px; }
+  .stat-label { font-size: 12px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; margin-bottom: 8px; }
+  .stat-value { font-size: 32px; font-weight: 600; letter-spacing: -1px; color: var(--blue-dark); }
+  .stat-sub { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+
+  .table-card { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; }
+  .table-card-header { padding: 20px 24px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; }
+  .table-card-header h2 { font-size: 15px; font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 12px 24px; text-align: left; font-size: 11px; font-weight: 500; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+  td { padding: 16px 24px; border-bottom: 1px solid var(--gray-100); font-size: 14px; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-50); }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .badge-active { background: var(--green-light); color: var(--green); }
+  .badge-pending { background: var(--orange-light); color: var(--orange); }
+  .badge-suspended { background: var(--red-light); color: var(--red); }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .biller-id { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gray-600); background: var(--gray-100); padding: 3px 8px; border-radius: 4px; }
+  .endpoint-text { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gray-600); }
+
+  .action-btn { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; border: 1.5px solid; transition: all 0.15s; }
+  .btn-fetch { background: var(--blue-light); color: var(--blue-dark); border-color: #C7D8F5; }
+  .btn-fetch:hover { background: var(--blue); color: white; border-color: var(--blue); }
+  .btn-pay { background: var(--green-light); color: var(--green); border-color: #BBF7D0; }
+  .btn-pay:hover { background: var(--green); color: white; border-color: var(--green); }
+  .btn-pay:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .actions-cell { display: flex; gap: 8px; align-items: center; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 20px; padding: 32px; width: 480px; max-width: 95vw; box-shadow: 0 24px 64px rgba(0,0,0,0.15); }
+  .modal h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.3px; }
+  .modal .modal-sub { font-size: 13px; color: var(--gray-600); margin-bottom: 24px; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--gray-600); margin-bottom: 6px; }
+  .form-group input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.15s; }
+  .form-group input:focus { border-color: var(--blue); }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+  .btn-cancel { flex: 1; padding: 10px; border: 1.5px solid var(--gray-200); background: white; border-radius: 8px; font-size: 14px; font-family: 'DM Sans', sans-serif; cursor: pointer; color: var(--gray-600); }
+  .btn-cancel:hover { background: var(--gray-50); }
+  .btn-confirm { flex: 2; padding: 10px; background: var(--header-gradient); border: none; border-radius: 8px; font-size: 14px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; color: white; }
+  .btn-confirm:hover { opacity: 0.9; }
+
+  /* Result panel */
+  .result-panel { margin-top: 20px; padding: 16px; border-radius: 10px; font-size: 13px; display: none; }
+  .result-panel.success { background: var(--green-light); border: 1px solid #BBF7D0; color: var(--green); }
+  .result-panel.error { background: var(--red-light); border: 1px solid #FECACA; color: var(--red); }
+  .result-panel.show { display: block; }
+  .result-label { font-weight: 600; margin-bottom: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; }
+  .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .result-item { }
+  .result-item .rk { font-size: 11px; opacity: 0.7; margin-bottom: 2px; }
+  .result-item .rv { font-weight: 500; font-size: 14px; }
+
+  .loading { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state { text-align: center; padding: 60px 24px; color: var(--gray-400); }
+  .empty-state p { margin-top: 8px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <div class="logo-icon">B</div>
+    <span class="logo-text">Bharat Connect</span>
+  </div>
+  <div class="header-right">
+    <a href="/ui/index.html" class="back-link">← Home</a>
+    <span class="header-badge">Dashboard</span>
+  </div>
+</header>
+
+<div class="page-content">
+  <div class="page-header">
+    <div class="page-title">
+      <h1>Biller Dashboard</h1>
+      <p>Registered billers and live transaction routing</p>
+    </div>
+    <a href="/ui/onboard.html" class="btn-primary">+ Onboard New Biller</a>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Billers</div>
+      <div class="stat-value" id="stat-total">—</div>
+      <div class="stat-sub">registered</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active</div>
+      <div class="stat-value" id="stat-active" style="color: var(--green)">—</div>
+      <div class="stat-sub">routing enabled</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" id="stat-pending" style="color: var(--orange)">—</div>
+      <div class="stat-sub">awaiting activation</div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-card-header">
+      <h2>Registered Billers</h2>
+      <button class="btn-primary" style="font-size:13px; padding:7px 14px;" onclick="loadBillers()">↻ Refresh</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Biller</th>
+          <th>Biller ID</th>
+          <th>Category</th>
+          <th>Endpoint</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="billers-tbody">
+        <tr><td colspan="6"><div class="empty-state">Loading billers...</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Fetch Modal -->
+<div class="modal-overlay" id="fetch-modal">
+  <div class="modal">
+    <h3>Fetch Bill</h3>
+    <p class="modal-sub" id="fetch-modal-sub">Retrieve an outstanding bill for a customer</p>
+    <div class="form-group">
+      <label>Customer Parameter</label>
+      <input type="text" id="fetch-param-key" placeholder="e.g. Mobile Number" value="Mobile Number">
+    </div>
+    <div class="form-group">
+      <label>Parameter Value</label>
+      <input type="text" id="fetch-param-value" placeholder="e.g. 9876543210" value="9876543210">
+    </div>
+    <div class="result-panel" id="fetch-result"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('fetch-modal')">Cancel</button>
+      <button class="btn-confirm" id="fetch-confirm-btn" onclick="doFetch()">Fetch Bill</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pay Modal -->
+<div class="modal-overlay" id="pay-modal">
+  <div class="modal">
+    <h3>Pay Bill</h3>
+    <p class="modal-sub" id="pay-modal-sub">Process payment for the fetched bill</p>
+    <div class="form-group">
+      <label>Bill Number</label>
+      <input type="text" id="pay-bill-number" readonly style="background: var(--gray-50)">
+    </div>
+    <div class="form-group">
+      <label>Amount (₹)</label>
+      <input type="text" id="pay-amount" readonly style="background: var(--gray-50)">
+    </div>
+    <div class="form-group">
+      <label>Payment Mode</label>
+      <input type="text" id="pay-mode" value="UPI">
+    </div>
+    <div class="result-panel" id="pay-result"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('pay-modal')">Cancel</button>
+      <button class="btn-confirm" id="pay-confirm-btn" onclick="doPayment()">Pay Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_KEY = 'POC-PLATFORM-KEY-001';
+let currentBillerId = null;
+let currentFetchResult = null;
+
+async function loadBillers() {
+  try {
+    const r = await fetch('/billers', { headers: { 'X-API-Key': API_KEY } });
+    const billers = await r.json();
+
+    document.getElementById('stat-total').textContent = billers.length;
+    document.getElementById('stat-active').textContent = billers.filter(b => b.status === 'ACTIVE').length;
+    document.getElementById('stat-pending').textContent = billers.filter(b => b.status === 'PENDING').length;
+
+    const tbody = document.getElementById('billers-tbody');
+    if (billers.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
+        <div style="font-size:32px">📋</div>
+        <p>No billers registered yet. <a href="/ui/onboard.html" style="color:var(--blue)">Onboard your first biller</a></p>
+      </div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = billers.map(b => {
+      const badgeClass = b.status === 'ACTIVE' ? 'badge-active' : b.status === 'PENDING' ? 'badge-pending' : 'badge-suspended';
+      const canTransact = b.status === 'ACTIVE' && b.biller_endpoint;
+      return `<tr>
+        <td><strong>${b.biller_name}</strong></td>
+        <td><span class="biller-id">${b.biller_id}</span></td>
+        <td>${b.category}</td>
+        <td><span class="endpoint-text">${b.biller_endpoint || '—'}</span></td>
+        <td><span class="badge ${badgeClass}"><span class="badge-dot"></span>${b.status}</span></td>
+        <td>
+          <div class="actions-cell">
+            <button class="action-btn btn-fetch" ${!canTransact ? 'disabled' : ''} onclick="openFetch('${b.biller_id}', '${b.biller_name}')">Fetch Bill</button>
+            <button class="action-btn btn-pay" disabled id="pay-btn-${b.biller_id}" onclick="openPay('${b.biller_id}', '${b.biller_name}')">Pay</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('billers-tbody').innerHTML = `<tr><td colspan="6"><div class="empty-state">Failed to load billers. Is the platform running?</div></td></tr>`;
+  }
+}
+
+function openFetch(billerId, billerName) {
+  currentBillerId = billerId;
+  currentFetchResult = null;
+  document.getElementById('fetch-modal-sub').textContent = `Fetching bill from ${billerName}`;
+  document.getElementById('fetch-result').className = 'result-panel';
+  document.getElementById('fetch-result').innerHTML = '';
+  document.getElementById('fetch-confirm-btn').innerHTML = 'Fetch Bill';
+  document.getElementById('fetch-modal').classList.add('open');
+}
+
+function openPay(billerId, billerName) {
+  if (!currentFetchResult) return;
+  document.getElementById('pay-modal-sub').textContent = `Processing payment for ${billerName}`;
+  document.getElementById('pay-bill-number').value = currentFetchResult.billNumber || '';
+  document.getElementById('pay-amount').value = currentFetchResult.billAmount || '';
+  document.getElementById('pay-result').className = 'result-panel';
+  document.getElementById('pay-result').innerHTML = '';
+  document.getElementById('pay-confirm-btn').innerHTML = 'Pay Now';
+  document.getElementById('pay-modal').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+async function doFetch() {
+  const paramKey = document.getElementById('fetch-param-key').value.trim();
+  const paramValue = document.getElementById('fetch-param-value').value.trim();
+  const btn = document.getElementById('fetch-confirm-btn');
+
+  btn.innerHTML = '<span class="loading"></span> Fetching...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/transactions/fetch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+      body: JSON.stringify({ biller_id: currentBillerId, customer_params: { [paramKey]: paramValue } })
+    });
+    const data = await r.json();
+
+    if (!r.ok) throw new Error(data.detail || 'Fetch failed');
+
+    currentFetchResult = data;
+
+    const panel = document.getElementById('fetch-result');
+    panel.className = 'result-panel success show';
+    panel.innerHTML = `
+      <div class="result-label">✓ Bill Retrieved</div>
+      <div class="result-grid">
+        <div class="result-item"><div class="rk">Bill Number</div><div class="rv">${data.billNumber}</div></div>
+        <div class="result-item"><div class="rk">Amount</div><div class="rv">₹${data.billAmount}</div></div>
+        <div class="result-item"><div class="rk">Customer</div><div class="rv">${data.customerName}</div></div>
+        <div class="result-item"><div class="rk">Due Date</div><div class="rv">${data.dueDate}</div></div>
+      </div>`;
+
+    btn.innerHTML = '✓ Fetched';
+    document.getElementById(`pay-btn-${currentBillerId}`).disabled = false;
+
+  } catch(e) {
+    const panel = document.getElementById('fetch-result');
+    panel.className = 'result-panel error show';
+    panel.innerHTML = `<div class="result-label">✗ Error</div>${e.message}`;
+    btn.innerHTML = 'Retry';
+    btn.disabled = false;
+  }
+}
+
+async function doPayment() {
+  const btn = document.getElementById('pay-confirm-btn');
+  btn.innerHTML = '<span class="loading"></span> Processing...';
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/transactions/payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+      body: JSON.stringify({
+        biller_id: currentBillerId,
+        bill_id: currentFetchResult.billNumber,
+        amount: currentFetchResult.billAmount,
+        payment_mode: document.getElementById('pay-mode').value
+      })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || 'Payment failed');
+
+    const panel = document.getElementById('pay-result');
+    panel.className = 'result-panel success show';
+    panel.innerHTML = `
+      <div class="result-label">✓ Payment Successful</div>
+      <div class="result-grid">
+        <div class="result-item"><div class="rk">Txn Reference</div><div class="rv">${data.txnReference || data.txn_ref || '—'}</div></div>
+        <div class="result-item"><div class="rk">Status</div><div class="rv">${data.status}</div></div>
+      </div>`;
+
+    btn.innerHTML = '✓ Paid';
+
+  } catch(e) {
+    const panel = document.getElementById('pay-result');
+    panel.className = 'result-panel error show';
+    panel.innerHTML = `<div class="result-label">✗ Error</div>${e.message}`;
+    btn.innerHTML = 'Retry';
+    btn.disabled = false;
+  }
+}
+
+loadBillers();
+</script>
+</body>
+</html>
