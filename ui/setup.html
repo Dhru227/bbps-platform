@@ -262,7 +262,12 @@ bbps.ip=http://${platformIp}:8112
 cu.billfetchresponse.url=/bbps/BillFetchResponse/1.0/urn:referenceId:
 cu.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:
 bbps.billfetchresponse.url=/bbps/BillFetchResponse/1.0/urn:referenceId:
-bbps.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:`;
+bbps.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:
+
+# Bill data provider — reads from bills.csv in the project root
+billing.provider.type=csv
+billing.provider.csv.path=./bills.csv
+billing.provider.csv.payment-log-path=./payments.csv`;
 
   document.getElementById('props-code').textContent = propsText;
   document.getElementById('props-copy').onclick = () => copyCode(document.getElementById('props-copy'), propsText);
