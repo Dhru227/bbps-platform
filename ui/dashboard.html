@@ -191,12 +191,13 @@
           <th>Biller ID</th>
           <th>Category</th>
           <th>Endpoint</th>
+          <th>BOU</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody id="billers-tbody">
-        <tr><td colspan="6"><div class="empty-state">Loading billers...</div></td></tr>
+        <tr><td colspan="7"><div class="empty-state">Loading billers...</div></td></tr>
       </tbody>
     </table>
   </div>
@@ -264,7 +265,7 @@ async function loadBillers() {
 
     const tbody = document.getElementById('billers-tbody');
     if (billers.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
         <div style="font-size:32px">📋</div>
         <p>No billers registered yet. <a href="/ui/onboard.html" style="color:var(--blue)">Onboard your first biller</a></p>
       </div></td></tr>`;
@@ -279,6 +280,7 @@ async function loadBillers() {
         <td><span class="biller-id">${b.biller_id}</span></td>
         <td>${b.category}</td>
         <td><span class="endpoint-text">${b.biller_endpoint || '—'}</span></td>
+        <td>${b.assigned_bou_id || "—"}</td>
         <td><span class="badge ${badgeClass}"><span class="badge-dot"></span>${b.status}</span></td>
         <td>
           <div class="actions-cell">
@@ -289,7 +291,7 @@ async function loadBillers() {
       </tr>`;
     }).join('');
   } catch(e) {
-    document.getElementById('billers-tbody').innerHTML = `<tr><td colspan="6"><div class="empty-state">Failed to load billers. Is the platform running?</div></td></tr>`;
+    document.getElementById('billers-tbody').innerHTML = `<tr><td colspan="7"><div class="empty-state">Failed to load billers. Is the platform running?</div></td></tr>`;
   }
 }
 

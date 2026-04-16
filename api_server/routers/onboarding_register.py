@@ -15,7 +15,7 @@ def register(payload: dict, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="session_id and biller_endpoint required")
         
     try:
-        result = complete_registration(session_id, biller_endpoint, bou_id, db)
+        result = complete_registration(session_id, biller_endpoint, bou_id, db, biller_name=payload.get("biller_name"), category=payload.get("category"))
         return result
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))

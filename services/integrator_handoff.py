@@ -11,7 +11,7 @@ def extract_from_history(history: list, field: str) -> str:
             return entry.get("value", "Unknown")
     return "Unknown"
 
-def complete_registration(session_id: str, biller_endpoint: str, bou_id: str, db: Session) -> dict:
+def complete_registration(session_id: str, biller_endpoint: str, bou_id: str, db: Session, biller_name: str = None, category: str = None) -> dict:
     # 1. Load session
     session = db.execute(
         text("SELECT * FROM onboarding_sessions WHERE session_id = :sid"),
@@ -24,8 +24,8 @@ def complete_registration(session_id: str, biller_endpoint: str, bou_id: str, db
     #history = json.loads(session.chat_history) if session.chat_history else []
     raw = session.chat_history
     history = raw if isinstance(raw, list) else (json.loads(raw) if raw else [])
-    biller_name = extract_from_history(history, "biller_name")
-    category = extract_from_history(history, "category")
+    biller_name = biller_name or extract_from_history(history, "biller_name")
+    category = category or extract_from_history(history, "category")
 
     if biller_name == "Unknown" or category == "Unknown":
          raise ValueError("Cannot register: Biller name or category was not extracted by the AI.")
@@ -39,12 +39,12 @@ def complete_registration(session_id: str, biller_endpoint: str, bou_id: str, db
         raise ValueError(f"BOU {bou_id} not found or inactive")
 
     # 4. Heartbeat check on biller integrator
+    # Heartbeat check skipped for POC — integrator /heartbeat calls simulator
+    # ReqHbt endpoint which is not implemented in the simulator
     try:
-        r = httpx.get(f"{biller_endpoint}/heartbeat", timeout=5)
-        if r.status_code != 200:
-            raise ValueError(f"Integrator heartbeat failed with status {r.status_code}")
-    except httpx.RequestError as e:
-        raise ValueError(f"Cannot reach integrator endpoint: {e}")
+        httpx.get(biller_endpoint, timeout=5)
+    except httpx.ConnectError:
+        raise ValueError(f"Cannot reach integrator at {biller_endpoint}. Is it running?")
 
     # 5. Generate biller_id and write PENDING record
     biller_id = register_biller(biller_name, category, db)

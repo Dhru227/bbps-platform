@@ -107,8 +107,8 @@
         <div class="tech-pills"><span class="tech-pill">Java 17 · Spring Boot</span><span class="tech-pill">PostgreSQL</span></div>
       </div>
       <div class="dl-buttons">
-        <a href="#" class="btn-dl-primary">📥 Download .zip</a>
-        <a href="https://github.com" target="_blank" class="btn-dl-secondary">🔗 Fork on GitHub</a>
+        <a href="https://github.com/Dhru227/bbps-biller-integrator/archive/refs/heads/main.zip" class="btn-dl-primary">📥 Download .zip</a>
+        <a href="https://github.com/Dhru227/bbps-biller-integrator" target="_blank" class="btn-dl-secondary">🔗 Fork on GitHub</a>
         <div class="dl-version">v0.1.0 · POC Release</div>
       </div>
     </div>
@@ -118,44 +118,76 @@
   <div class="card">
     <div class="steps-title">Configure Your Instance</div>
     <div class="steps-sub">Follow these steps in order</div>
+
     <div class="step-row">
       <div class="step-num">1</div>
       <div class="step-body">
-        <div class="step-title">Edit application.properties</div>
-        <div class="step-desc">Set your database connection, port, and OU identifier.</div>
-        <div class="code-block"><pre class="code-text">server.port=8111
-spring.datasource.url=jdbc:postgresql://
-  localhost:5432/yourdb
-ou.id=BBPS001
-cu.domain=http://localhost:8112</pre><button class="copy-btn" onclick="copyCode(this,'server.port=8111\nspring.datasource.url=jdbc:postgresql://localhost:5432/yourdb\nou.id=BBPS001\ncu.domain=http://localhost:8112')">📋 Copy</button></div>
+        <div class="step-title">Clone the repository</div>
+        <div class="step-desc">Download the integrator to your machine.</div>
+        <div class="code-block"><pre class="code-text">git clone https://github.com/Dhru227/bbps-biller-integrator.git
+cd bbps-biller-integrator</pre><button class="copy-btn" onclick="copyCode(this,'git clone https://github.com/Dhru227/bbps-biller-integrator.git\ncd bbps-biller-integrator')">📋 Copy</button></div>
       </div>
     </div>
+
     <div class="step-row">
       <div class="step-num">2</div>
       <div class="step-body">
-        <div class="step-title">Create your PostgreSQL schema</div>
-        <div class="step-desc">Run the included schema.sql against your database.</div>
-        <div class="code-block"><pre class="code-text">psql -U postgres -d yourdb -f schema.sql</pre><button class="copy-btn" onclick="copyCode(this,'psql -U postgres -d yourdb -f schema.sql')">📋 Copy</button></div>
+        <div class="step-title">Create your PostgreSQL database</div>
+        <div class="step-desc">Create the database and schema for your bill data.</div>
+        <div class="code-block"><pre class="code-text">psql -U postgres -h localhost -c "CREATE DATABASE billerdb;"
+psql -U postgres -h localhost -d billerdb -c "CREATE SCHEMA IF NOT EXISTS billerdb;"
+cat src/main/resources/schema.sql | psql -U postgres -h localhost -d billerdb</pre><button class="copy-btn" onclick="copyCode(this,'psql -U postgres -h localhost -c \"CREATE DATABASE billerdb;\"\npsql -U postgres -h localhost -d billerdb -c \"CREATE SCHEMA IF NOT EXISTS billerdb;\"\ncat src/main/resources/schema.sql | psql -U postgres -h localhost -d billerdb')">📋 Copy</button></div>
       </div>
     </div>
+
     <div class="step-row">
       <div class="step-num">3</div>
       <div class="step-body">
-        <div class="step-title">Run the Spring Boot application</div>
-        <div class="step-desc">The integrator will start on your configured port.</div>
-        <div class="code-block"><pre class="code-text">mvn spring-boot:run</pre><button class="copy-btn" onclick="copyCode(this,'mvn spring-boot:run')">📋 Copy</button></div>
-        <div class="info-note">ℹ️ Requires Java 17 and Maven installed</div>
+        <div class="step-title">Configure application.properties</div>
+        <div class="step-desc">Replace the contents of <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;font-family:DM Mono,monospace;font-size:11px">src/main/resources/application.properties</code> with this — already personalised for your setup:</div>
+        <div class="code-block"><pre class="code-text" id="props-code">Loading...</pre><button class="copy-btn" id="props-copy">📋 Copy</button></div>
       </div>
     </div>
+
     <div class="step-row">
       <div class="step-num">4</div>
       <div class="step-body">
-        <div class="step-title">Test the heartbeat endpoint</div>
-        <div class="step-desc">Confirm your instance is reachable before submitting.</div>
-        <div class="code-block"><pre class="code-text">curl http://localhost:8111/heartbeat</pre><button class="copy-btn" onclick="copyCode(this,'curl http://localhost:8111/heartbeat')">📋 Copy</button></div>
-        <div class="expected-pill">Expected: HTTP 200</div>
+        <div class="step-title">Seed your bill data</div>
+        <div class="step-desc">Add sample bills so fetch requests return real data during the demo.</div>
+        <div class="code-block"><pre class="code-text">psql -U postgres -h localhost -d billerdb -c "
+INSERT INTO billerdb.bill_details
+  (customer_param_name, customer_param_type,
+   customer_param_value, bill_amount,
+   bill_date, due_date, bill_status, bill_number)
+VALUES
+  ('Consumer Number','Numeric','1001',1850.00,'2026-04-15','2026-05-01','UNPAID','DEMO-001'),
+  ('Consumer Number','Numeric','1002',3200.00,'2026-04-15','2026-05-01','UNPAID','DEMO-002'),
+  ('Consumer Number','Numeric','1003',750.00,'2026-04-15','2026-05-01','UNPAID','DEMO-003');"</pre><button class="copy-btn" onclick="copyCode(this,`psql -U postgres -h localhost -d billerdb -c \"\nINSERT INTO billerdb.bill_details\n  (customer_param_name, customer_param_type,\n   customer_param_value, bill_amount,\n   bill_date, due_date, bill_status, bill_number)\nVALUES\n  ('Consumer Number','Numeric','1001',1850.00,'2026-04-15','2026-05-01','UNPAID','DEMO-001'),\n  ('Consumer Number','Numeric','1002',3200.00,'2026-04-15','2026-05-01','UNPAID','DEMO-002'),\n  ('Consumer Number','Numeric','1003',750.00,'2026-04-15','2026-05-01','UNPAID','DEMO-003');\"`)">📋 Copy</button></div>
       </div>
     </div>
+
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Start the integrator</div>
+        <div class="step-desc">Run this from inside the cloned repository folder.</div>
+        <div class="code-block"><pre class="code-text">mvn spring-boot:run</pre><button class="copy-btn" onclick="copyCode(this,'mvn spring-boot:run')">📋 Copy</button></div>
+        <div class="info-note">ℹ️ Requires Java 17 and Maven — <a href="https://adoptium.net" target="_blank" style="color:#94A3B8">Download Java 17</a> · <a href="https://maven.apache.org/download.cgi" target="_blank" style="color:#94A3B8">Download Maven</a></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">6</div>
+      <div class="step-body">
+        <div class="step-title">Verify it's running</div>
+        <div class="step-desc">Open a new terminal and run this to confirm your integrator is live.</div>
+        <div class="code-block"><pre class="code-text">curl -X POST http://localhost:8111/mock-biller/test/fetch \
+  -H "Content-Type: application/json" \
+  -d '{"Consumer Number": "1001"}'</pre><button class="copy-btn" onclick="copyCode(this,'curl -X POST http://localhost:8111/mock-biller/test/fetch \\\n  -H \"Content-Type: application/json\" \\\n  -d \'{\"Consumer Number\": \"1001\"}\'')">📋 Copy</button></div>
+        <div class="expected-pill">Expected: bill_amount, due_date, status: SUCCESS</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Register endpoint -->
@@ -205,12 +237,36 @@ window.onload = function() {
   const sessionId = sessionStorage.getItem('session_id');
   const bizName = sessionStorage.getItem('biz_name') || 'Your Company';
   const bou = sessionStorage.getItem('selected_bou') || 'BOU001';
+  const category = sessionStorage.getItem('industry') || 'Electricity';
 
   if (!sessionId) { window.location.href = '/ui/register.html'; return; }
 
   document.getElementById('strip-company').textContent = bizName;
   document.getElementById('strip-session').textContent = 'Session: ' + sessionId.substring(0,8) + '...';
   document.getElementById('bou-select').value = bou;
+
+  // Inject personalised values into code blocks
+  const platformIp = window.location.hostname;
+  const ouId = 'BBPS_' + bizName.toUpperCase().replace(/\s+/g, '_').substring(0, 8);
+
+  const propsText = `server.port=8111
+spring.datasource.url=jdbc:postgresql://localhost:5432/billerdb?currentSchema=billerdb
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.hibernate.ddl-auto=update
+spring.sql.init.mode=never
+spring.main.allow-bean-definition-overriding=true
+ou.id=${ouId}
+cu.domain=http://${platformIp}:8112
+bbps.ip=http://${platformIp}:8112
+cu.billfetchresponse.url=/bbps/BillFetchResponse/1.0/urn:referenceId:
+cu.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:
+bbps.billfetchresponse.url=/bbps/BillFetchResponse/1.0/urn:referenceId:
+bbps.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:`;
+
+  document.getElementById('props-code').textContent = propsText;
+  document.getElementById('props-copy').onclick = () => copyCode(document.getElementById('props-copy'), propsText);
 };
 
 async function testConnection() {
@@ -255,7 +311,7 @@ async function submitEndpoint() {
     const r = await fetch('/onboard/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
-      body: JSON.stringify({ session_id: sessionId, biller_endpoint: endpoint, bou_id: bouId })
+      body: JSON.stringify({ session_id: sessionId, biller_endpoint: endpoint, bou_id: bouId, biller_name: sessionStorage.getItem("biz_name"), category: sessionStorage.getItem("industry") })
     });
 
     const data = await r.json();
