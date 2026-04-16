@@ -152,17 +152,16 @@ cat src/main/resources/schema.sql | psql -U postgres -h localhost -d billerdb</p
     <div class="step-row">
       <div class="step-num">4</div>
       <div class="step-body">
-        <div class="step-title">Seed your bill data</div>
-        <div class="step-desc">Add sample bills so fetch requests return real data during the demo.</div>
-        <div class="code-block"><pre class="code-text">psql -U postgres -h localhost -d billerdb -c "
-INSERT INTO billerdb.bill_details
-  (customer_param_name, customer_param_type,
-   customer_param_value, bill_amount,
-   bill_date, due_date, bill_status, bill_number)
-VALUES
-  ('Consumer Number','Numeric','1001',1850.00,'2026-04-15','2026-05-01','UNPAID','DEMO-001'),
-  ('Consumer Number','Numeric','1002',3200.00,'2026-04-15','2026-05-01','UNPAID','DEMO-002'),
-  ('Consumer Number','Numeric','1003',750.00,'2026-04-15','2026-05-01','UNPAID','DEMO-003');"</pre><button class="copy-btn" onclick="copyCode(this,`psql -U postgres -h localhost -d billerdb -c \"\nINSERT INTO billerdb.bill_details\n  (customer_param_name, customer_param_type,\n   customer_param_value, bill_amount,\n   bill_date, due_date, bill_status, bill_number)\nVALUES\n  ('Consumer Number','Numeric','1001',1850.00,'2026-04-15','2026-05-01','UNPAID','DEMO-001'),\n  ('Consumer Number','Numeric','1002',3200.00,'2026-04-15','2026-05-01','UNPAID','DEMO-002'),\n  ('Consumer Number','Numeric','1003',750.00,'2026-04-15','2026-05-01','UNPAID','DEMO-003');\"`)">📋 Copy</button></div>
+        <div class="step-title">Add your bill data</div>
+        <div class="step-desc">Create a <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-family:DM Mono,monospace;font-size:11px">bills.csv</code> file in the root of the cloned repository (same folder as <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-family:DM Mono,monospace;font-size:11px">pom.xml</code>). Use this exact format — the column names must match.</div>
+        <div class="code-block"><pre class="code-text">bill_id,customer_param_name,customer_param_type,customer_param_value,bill_amount,bill_date,due_date,bill_number,bill_period,bill_status
+1,Consumer Number,Numeric,1001,1850.00,2026-04-16,2026-05-01,DEMO-001,APR-2026,UNPAID
+2,Consumer Number,Numeric,1002,3200.00,2026-04-16,2026-05-01,DEMO-002,APR-2026,UNPAID
+3,Consumer Number,Numeric,1003,750.00,2026-04-16,2026-05-01,DEMO-003,APR-2026,UNPAID</pre><button class="copy-btn" onclick="copyCode(this,'bill_id,customer_param_name,customer_param_type,customer_param_value,bill_amount,bill_date,due_date,bill_number,bill_period,bill_status
+1,Consumer Number,Numeric,1001,1850.00,2026-04-16,2026-05-01,DEMO-001,APR-2026,UNPAID
+2,Consumer Number,Numeric,1002,3200.00,2026-04-16,2026-05-01,DEMO-002,APR-2026,UNPAID
+3,Consumer Number,Numeric,1003,750.00,2026-04-16,2026-05-01,DEMO-003,APR-2026,UNPAID')">📋 Copy</button></div>
+        <div class="info-note">ℹ️ The integrator reads this file directly — no database setup needed for bill data. Replace the consumer numbers and amounts with your real values.</div>
       </div>
     </div>
 
