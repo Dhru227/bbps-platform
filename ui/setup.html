@@ -247,6 +247,8 @@ window.onload = function() {
   // Inject personalised values into code blocks
   const platformIp = window.location.hostname;
   const ouId = 'BBPS_' + bizName.toUpperCase().replace(/\s+/g, '_').substring(0, 8);
+  const dataSource = sessionStorage.getItem('data_source') || 'Database';
+  const providerType = dataSource === 'Database' ? 'postgres' : 'csv';
 
   const propsText = `server.port=8111
 spring.datasource.url=jdbc:postgresql://localhost:5432/billerdb?currentSchema=billerdb
@@ -265,7 +267,7 @@ bbps.billfetchresponse.url=/bbps/BillFetchResponse/1.0/urn:referenceId:
 bbps.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:
 
 # Provider selection: postgres | csv | excel
-billing.provider.type=csv
+billing.provider.type=${providerType}
 billing.provider.date-format=yyyy-MM-dd
 # Postgres provider options
 billing.provider.postgres.tables.bill-details=bill_details
