@@ -264,10 +264,57 @@ cu.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:
 bbps.billfetchresponse.url=/bbps/BillFetchResponse/1.0/urn:referenceId:
 bbps.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:
 
-# Bill data provider — reads from bills.csv in the project root
+# Provider selection: postgres | csv | excel
 billing.provider.type=csv
+billing.provider.date-format=yyyy-MM-dd
+# Postgres provider options
+billing.provider.postgres.tables.bill-details=bill_details
+billing.provider.postgres.tables.payment-transactions=payment_transactions
+billing.provider.postgres.bill-columns.bill-id=bill_id
+billing.provider.postgres.bill-columns.customer-param-name=customer_param_name
+billing.provider.postgres.bill-columns.customer-param-type=customer_param_type
+billing.provider.postgres.bill-columns.customer-param-value=customer_param_value
+billing.provider.postgres.bill-columns.bill-amount=bill_amount
+billing.provider.postgres.bill-columns.bill-date=bill_date
+billing.provider.postgres.bill-columns.due-date=due_date
+billing.provider.postgres.bill-columns.bill-number=bill_number
+billing.provider.postgres.bill-columns.bill-period=bill_period
+billing.provider.postgres.bill-columns.bill-status=bill_status
+billing.provider.postgres.bill-columns.additional-info=additional_info
+billing.provider.postgres.bill-columns.created-at=created_at
+billing.provider.postgres.bill-columns.updated-at=updated_at
+billing.provider.postgres.payment-columns.bill-id=bill_id
+billing.provider.postgres.payment-columns.bbps-txn-ref=bbps_txn_ref
+billing.provider.postgres.payment-columns.amount-paid=amount_paid
+billing.provider.postgres.payment-columns.payment-mode=payment_mode
+# CSV provider options
 billing.provider.csv.path=./bills.csv
-billing.provider.csv.payment-log-path=./payments.csv`;
+billing.provider.csv.payment-log-path=./payments.csv
+billing.provider.csv.delimiter=,
+billing.provider.csv.columns.bill-id=bill_id
+billing.provider.csv.columns.customer-param-name=customer_param_name
+billing.provider.csv.columns.customer-param-type=customer_param_type
+billing.provider.csv.columns.customer-param-value=customer_param_value
+billing.provider.csv.columns.bill-amount=bill_amount
+billing.provider.csv.columns.bill-date=bill_date
+billing.provider.csv.columns.due-date=due_date
+billing.provider.csv.columns.bill-number=bill_number
+billing.provider.csv.columns.bill-period=bill_period
+billing.provider.csv.columns.bill-status=bill_status
+# Excel provider options
+billing.provider.excel.path=./bills.xlsx
+billing.provider.excel.sheet-name=Sheet1
+billing.provider.excel.payment-log-path=./payments.xlsx
+billing.provider.excel.columns.bill-id=bill_id
+billing.provider.excel.columns.customer-param-name=customer_param_name
+billing.provider.excel.columns.customer-param-type=customer_param_type
+billing.provider.excel.columns.customer-param-value=customer_param_value
+billing.provider.excel.columns.bill-amount=bill_amount
+billing.provider.excel.columns.bill-date=bill_date
+billing.provider.excel.columns.due-date=due_date
+billing.provider.excel.columns.bill-number=bill_number
+billing.provider.excel.columns.bill-period=bill_period
+billing.provider.excel.columns.bill-status=bill_status`;
 
   document.getElementById('props-code').textContent = propsText;
   document.getElementById('props-copy').onclick = () => copyCode(document.getElementById('props-copy'), propsText);
