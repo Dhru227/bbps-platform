@@ -198,7 +198,7 @@ cat src/main/resources/schema.sql | psql -U postgres -h localhost -d billerdb</p
         <div class="info-note">ℹ️ If your columns have different names, update the <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">billing.provider.postgres.bill-columns.*</code> mappings in your <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">application.properties</code> to match.</div>
 
         <div style="margin:16px 0 6px;font-size:13px;font-weight:600;color:var(--gray-800)">Option B — Fresh database, insert sample bills</div>
-        <div style="font-size:13px;color:var(--gray-600);margin-bottom:8px;line-height:1.5">The schema is created automatically on startup. Run this after starting the integrator to insert sample bills — replace the values with your real customer numbers and amounts:</div>
+        <div style="font-size:13px;color:var(--gray-600);margin-bottom:8px;line-height:1.5">The <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">bill_details</code> table is created automatically when the integrator starts. <strong>Complete step 5 first</strong>, then come back and run this to seed your bills — replace the values with your real customer numbers and amounts:</div>
         <div class="code-block"><pre class="code-text" id="db-seed-code">Loading...</pre><button class="copy-btn" id="db-seed-copy">📋 Copy</button></div>
 
         <div style="margin:16px 0 6px;font-size:13px;font-weight:600;color:var(--gray-800)">Verify your data is accessible</div>
@@ -312,7 +312,7 @@ bbps.billpaymentresponse.url=/bbps/BillPaymentResponse/1.0/urn:referenceId:
 # Provider selection: postgres | csv | excel
 billing.provider.type=${providerType}
 billing.provider.date-format=yyyy-MM-dd
-# Postgres provider options
+${providerType === 'postgres' ? `# Postgres provider options
 billing.provider.postgres.tables.bill-details=bill_details
 billing.provider.postgres.tables.payment-transactions=payment_transactions
 billing.provider.postgres.bill-columns.bill-id=bill_id
@@ -331,8 +331,7 @@ billing.provider.postgres.bill-columns.updated-at=updated_at
 billing.provider.postgres.payment-columns.bill-id=bill_id
 billing.provider.postgres.payment-columns.bbps-txn-ref=bbps_txn_ref
 billing.provider.postgres.payment-columns.amount-paid=amount_paid
-billing.provider.postgres.payment-columns.payment-mode=payment_mode
-# CSV provider options
+billing.provider.postgres.payment-columns.payment-mode=payment_mode` : `# CSV provider options
 billing.provider.csv.path=./bills.csv
 billing.provider.csv.payment-log-path=./payments.csv
 billing.provider.csv.delimiter=,
@@ -345,21 +344,7 @@ billing.provider.csv.columns.bill-date=bill_date
 billing.provider.csv.columns.due-date=due_date
 billing.provider.csv.columns.bill-number=bill_number
 billing.provider.csv.columns.bill-period=bill_period
-billing.provider.csv.columns.bill-status=bill_status
-# Excel provider options
-billing.provider.excel.path=./bills.xlsx
-billing.provider.excel.sheet-name=Sheet1
-billing.provider.excel.payment-log-path=./payments.xlsx
-billing.provider.excel.columns.bill-id=bill_id
-billing.provider.excel.columns.customer-param-name=customer_param_name
-billing.provider.excel.columns.customer-param-type=customer_param_type
-billing.provider.excel.columns.customer-param-value=customer_param_value
-billing.provider.excel.columns.bill-amount=bill_amount
-billing.provider.excel.columns.bill-date=bill_date
-billing.provider.excel.columns.due-date=due_date
-billing.provider.excel.columns.bill-number=bill_number
-billing.provider.excel.columns.bill-period=bill_period
-billing.provider.excel.columns.bill-status=bill_status`;
+billing.provider.csv.columns.bill-status=bill_status`}`;
 
   document.getElementById('props-code').textContent = propsText;
   document.getElementById('props-copy').onclick = () => copyCode(document.getElementById('props-copy'), propsText);
