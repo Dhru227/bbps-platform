@@ -171,32 +171,11 @@ cat src/main/resources/schema.sql | psql -U postgres -h localhost -d billerdb</p
         <div class="step-desc">Your integrator reads from the <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-family:DM Mono,monospace;font-size:11px">bill_details</code> table in your database. Choose the option that applies to you:</div>
 
         <div style="margin:14px 0 6px;font-size:13px;font-weight:600;color:var(--gray-800)">Option A — You already have bills in your database</div>
-        <div style="font-size:13px;color:var(--gray-600);margin-bottom:8px;line-height:1.5">Make sure your existing table has the required columns. Run this to check:</div>
-        <div class="code-block"><pre class="code-text">psql -U postgres -h localhost -d billerdb -c "\d billerdb.bill_details"</pre><button class="copy-btn" onclick="copyCode(this,'psql -U postgres -h localhost -d billerdb -c "\\d billerdb.bill_details"')">📋 Copy</button></div>
-        <div style="font-size:13px;color:var(--gray-600);margin:8px 0;line-height:1.5">Your table must have these columns — if any are missing, add them:</div>
-        <div class="code-block"><pre class="code-text">ALTER TABLE billerdb.bill_details
-  ADD COLUMN IF NOT EXISTS customer_param_name VARCHAR(100),
-  ADD COLUMN IF NOT EXISTS customer_param_type VARCHAR(50),
-  ADD COLUMN IF NOT EXISTS customer_param_value VARCHAR(100),
-  ADD COLUMN IF NOT EXISTS bill_amount NUMERIC(10,2),
-  ADD COLUMN IF NOT EXISTS bill_date DATE,
-  ADD COLUMN IF NOT EXISTS due_date DATE,
-  ADD COLUMN IF NOT EXISTS bill_status VARCHAR(20),
-  ADD COLUMN IF NOT EXISTS bill_number VARCHAR(50),
-  ADD COLUMN IF NOT EXISTS bill_period VARCHAR(20),
-  ADD COLUMN IF NOT EXISTS additional_info TEXT;</pre><button class="copy-btn" onclick="copyCode(this,'ALTER TABLE billerdb.bill_details
-  ADD COLUMN IF NOT EXISTS customer_param_name VARCHAR(100),
-  ADD COLUMN IF NOT EXISTS customer_param_type VARCHAR(50),
-  ADD COLUMN IF NOT EXISTS customer_param_value VARCHAR(100),
-  ADD COLUMN IF NOT EXISTS bill_amount NUMERIC(10,2),
-  ADD COLUMN IF NOT EXISTS bill_date DATE,
-  ADD COLUMN IF NOT EXISTS due_date DATE,
-  ADD COLUMN IF NOT EXISTS bill_status VARCHAR(20),
-  ADD COLUMN IF NOT EXISTS bill_number VARCHAR(50),
-  ADD COLUMN IF NOT EXISTS bill_period VARCHAR(20),
-  ADD COLUMN IF NOT EXISTS additional_info TEXT;')">📋 Copy</button></div>
-        <div class="info-note">ℹ️ If your columns have different names, update the <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">billing.provider.postgres.bill-columns.*</code> mappings in your <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">application.properties</code> to match.</div>
-
+        <div style="font-size:13px;color:var(--gray-600);margin-bottom:8px;line-height:1.5">Your <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">application.properties</code> already has default column name mappings under <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">billing.provider.postgres.bill-columns.*</code>. If your existing table uses different column names, update those mappings to match — do not alter your database.</div>
+        <div style="font-size:13px;color:var(--gray-600);margin-bottom:8px;line-height:1.5">For example, if your table uses <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">amount</code> instead of <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">bill_amount</code>:</div>
+        <div class="code-block"><pre class="code-text">billing.provider.postgres.bill-columns.bill-amount=amount</pre><button class="copy-btn" onclick="copyCode(this,'billing.provider.postgres.bill-columns.bill-amount=amount')">📋 Copy</button></div>
+        <div style="font-size:13px;color:var(--gray-600);margin:8px 0;line-height:1.5">Then verify your data is accessible:</div>
+        <div class="code-block"><pre class="code-text">psql -U postgres -h localhost -d billerdb -c "SELECT * FROM billerdb.bill_details LIMIT 3;"</pre><button class="copy-btn" onclick="copyCode(this,'psql -U postgres -h localhost -d billerdb -c \"SELECT * FROM billerdb.bill_details LIMIT 3;\"')">📋 Copy</button></div>
         <div style="margin:16px 0 6px;font-size:13px;font-weight:600;color:var(--gray-800)">Option B — Fresh database, insert sample bills</div>
         <div style="font-size:13px;color:var(--gray-600);margin-bottom:8px;line-height:1.5">The <code style="background:var(--gray-100);padding:2px 4px;border-radius:3px;font-family:DM Mono,monospace;font-size:11px">bill_details</code> table is created automatically when the integrator starts. <strong>Complete step 5 first</strong>, then come back and run this to seed your bills — replace the values with your real customer numbers and amounts:</div>
         <div class="code-block"><pre class="code-text" id="db-seed-code">Loading...</pre><button class="copy-btn" id="db-seed-copy">📋 Copy</button></div>
