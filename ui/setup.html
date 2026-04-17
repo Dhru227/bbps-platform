@@ -149,7 +149,7 @@ cat src/main/resources/schema.sql | psql -U postgres -h localhost -d billerdb</p
       </div>
     </div>
 
-    <div class="step-row">
+    <div class="step-row" id="step-4-csv" style="display:none">
       <div class="step-num">4</div>
       <div class="step-body">
         <div class="step-title">Add your bill data</div>
@@ -162,6 +162,15 @@ cat src/main/resources/schema.sql | psql -U postgres -h localhost -d billerdb</p
 2,Consumer Number,Numeric,1002,3200.00,2026-04-16,2026-05-01,DEMO-002,APR-2026,UNPAID
 3,Consumer Number,Numeric,1003,750.00,2026-04-16,2026-05-01,DEMO-003,APR-2026,UNPAID')">📋 Copy</button></div>
         <div class="info-note">ℹ️ The integrator reads this file directly — no database setup needed for bill data. Replace the consumer numbers and amounts with your real values.</div>
+      </div>
+    </div>
+    <div class="step-row" id="step-4-db" style="display:none">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Seed your bill data into PostgreSQL</div>
+        <div class="step-desc">Your integrator is configured to read from the <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-family:DM Mono,monospace;font-size:11px">bill_details</code> table. Run this to insert sample bills — replace the values with your real data.</div>
+        <div class="code-block"><pre class="code-text" id="db-seed-code">Loading...</pre><button class="copy-btn" id="db-seed-copy">📋 Copy</button></div>
+        <div class="info-note">ℹ️ The schema is created automatically on startup. You only need to seed the data.</div>
       </div>
     </div>
 
@@ -320,6 +329,25 @@ billing.provider.excel.columns.bill-status=bill_status`;
 
   document.getElementById('props-code').textContent = propsText;
   document.getElementById('props-copy').onclick = () => copyCode(document.getElementById('props-copy'), propsText);
+
+  // Show correct step 4 based on data source selection
+  if (providerType === 'postgres') {
+    document.getElementById('step-4-db').style.display = 'flex';
+    document.getElementById('step-4-csv').style.display = 'none';
+    const dbSeed = `psql -U postgres -h localhost -d billerdb -c "
+INSERT INTO billerdb.bill_details
+  (customer_param_name, customer_param_type, customer_param_value,
+   bill_amount, bill_date, due_date, bill_status, bill_number)
+VALUES
+  ('Consumer Number','Numeric','1001',1850.00,'2026-04-16','2026-05-01','UNPAID','DEMO-001'),
+  ('Consumer Number','Numeric','1002',3200.00,'2026-04-16','2026-05-01','UNPAID','DEMO-002'),
+  ('Consumer Number','Numeric','1003',750.00,'2026-04-16','2026-05-01','UNPAID','DEMO-003');"`;
+    document.getElementById('db-seed-code').textContent = dbSeed;
+    document.getElementById('db-seed-copy').onclick = () => copyCode(document.getElementById('db-seed-copy'), dbSeed);
+  } else {
+    document.getElementById('step-4-csv').style.display = 'flex';
+    document.getElementById('step-4-db').style.display = 'none';
+  }
 };
 
 async function testConnection() {
