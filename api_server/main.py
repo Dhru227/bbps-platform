@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from dotenv import load_dotenv
 from starlette.middleware.base import BaseHTTPMiddleware
 from api_server.middleware.auth import api_key_middleware
@@ -16,6 +18,13 @@ load_dotenv()
 app = FastAPI(title="BBPS Platform", version="0.1.0")
 
 # Register our custom auth middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(BaseHTTPMiddleware, dispatch=api_key_middleware)
 
 # Register our routers
